@@ -1,0 +1,356 @@
+version: 2.1
+
+orbs:
+  soos-orb:
+    # ***************************
+    orbs:
+    # ***************************
+      python: circleci/python@1.2.0
+
+    # ***************************
+    commands:
+    # ***************************
+      announce_start:
+        parameters:
+          mode:
+            type: string
+            default: "run_and_wait"
+        steps:
+          - run: echo "BEGIN SOOS << parameters.mode >>"
+          - run: echo "WORKING DIRECTORY $CIRCLE_WORKING_DIRECTORY"
+
+    # ***************************
+    jobs:
+    # ***************************
+
+      # ##########################
+      custom:
+      # ##########################
+
+        description: |
+            Run the SOOS security analysis in custom mode with full control.
+            Mode parameter will dictate type of analysis:
+            a) run_and_wait: The process will submit manifest files and wait for analysis
+               result before exiting
+            b) async_init: The process will submit manifest files and exit. Requires a
+               subsequent call with mode "async_result" to get analysis result.
+            c) async_result: The process will search for analysis URL file written in
+               async_init process and execute call to URL until analysis results are available.
+        parameters:
+          mode:
+            type: string
+            default: "run_and_wait"
+          on_failure:
+            type: string
+            default: "fail_the_build"
+          directories_to_exclude:
+            type: string
+            default: ""
+          files_to_exclude:
+            type: string
+            default: ""
+          working_directory:
+            type: string
+            default: $CIRCLE_WORKING_DIRECTORY
+          analysis_result_max_wait:
+            type: integer
+            default: 300
+          analysis_result_polling_interval:
+            type: integer
+            default: 10
+          fs_debug:
+            type: boolean
+            default: false
+        executor:
+          name: python/default
+          tag: "3.8"
+
+        steps:
+        - announce_start:
+            mode: << parameters.mode >>
+
+        - checkout
+
+        - run:
+            command: mkdir -p soos/workspace
+            name: Create SOOS Workspace Folder
+
+        - when:
+            condition: << parameters.fs_debug >>
+            steps:
+              - run: pwd
+              - run: ls -al
+              - run: ls -al soos
+
+        - run:
+            command: |
+              cd soos/workspace
+              curl -s https://api.github.com/soos-io/soos-ci-analysis-python/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | xargs -n 1 curl -LO
+              sha256sum -c soos.sha256
+              sha256sum -c requirements.sha256
+              cd ../../
+            name: Get Latest SOOS Code
+
+        - python/install-packages:
+            pip-dependency-file: soos/workspace/requirements.txt
+            pkg-manager: pip
+
+
+        #- when:
+        #  condition: << parameters.preinstall-foo >>
+        #  steps:
+        #    - run: echo "preinstall"
+        #- analyze
+        - run:
+            command: python ./soos/workspace/soos.py -m=<< parameters.mode >> -of=<< parameters.on_failure >> -dte=<< parameters.directories_to_exclude >> -fte=<< parameters.files_to_exclude >> -wd=<< parameters.working_directory >> -armw=<< parameters.analysis_result_max_wait >> -arpi=<< parameters.analysis_result_polling_interval >>
+            name: Execute SOOS CLI
+
+        - persist_to_workspace:
+            # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+            # taken to be the root directory of the workspace.
+            root: soos
+            paths:
+              - workspace
+
+      # ##########################
+      analysis_run_and_wait:
+      # ##########################
+
+        description: |
+            Run the SOOS security analysis in run_and_wait mode with full control.
+        parameters:
+          on_failure:
+            type: string
+            default: "fail_the_build"
+          directories_to_exclude:
+            type: string
+            default: ""
+          files_to_exclude:
+            type: string
+            default: ""
+          working_directory:
+            type: string
+            default: $CIRCLE_WORKING_DIRECTORY
+          analysis_result_max_wait:
+            type: integer
+            default: 300
+          analysis_result_polling_interval:
+            type: integer
+            default: 10
+          fs_debug:
+            type: boolean
+            default: false
+        executor:
+          name: python/default
+          tag: "3.8"
+
+        steps:
+        - announce_start:
+            mode: "run_and_wait"
+
+        - checkout
+
+        - run:
+            command: mkdir -p soos/workspace
+            name: Create SOOS Workspace Folder
+
+        - run:
+            command: |
+              cd soos/workspace
+              curl -s https://api.github.com/repos/soos-io/soos-ci-analysis-python/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | xargs -n 1 curl -LO
+              sha256sum -c soos.sha256
+              sha256sum -c requirements.sha256
+              cd ../../
+            name: Get Latest SOOS Code
+
+        #- python/install-packages:
+        #    pkg-manager: pip
+        - python/install-packages:
+            pip-dependency-file: soos/workspace/requirements.txt
+            pkg-manager: pip
+
+        - when:
+            condition: << parameters.fs_debug >>
+            steps:
+              - run: pwd
+              - run: ls -al
+              - run: ls -al soos
+
+        #- when:
+        #  condition: << parameters.preinstall-foo >>
+        #  steps:
+        #    - run: echo "preinstall"
+        #- analyze
+        - run:
+            command: python ./soos/workspace/soos.py -m=run_and_wait -of=<< parameters.on_failure >> -dte=<< parameters.directories_to_exclude >> -fte=<< parameters.files_to_exclude >> -wd=<< parameters.working_directory >> -armw=<< parameters.analysis_result_max_wait >> -arpi=<< parameters.analysis_result_polling_interval >>
+            name: Execute SOOS CLI
+
+        - persist_to_workspace:
+            # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+            # taken to be the root directory of the workspace.
+            root: soos
+            paths:
+              - workspace
+
+      # ##########################
+      analysis_async_init:
+      # ##########################
+        description: |
+            Run the SOOS security analysis in async_init mode with full control.
+        parameters:
+          on_failure:
+            type: string
+            default: "fail_the_build"
+          directories_to_exclude:
+            type: string
+            default: ""
+          files_to_exclude:
+            type: string
+            default: ""
+          working_directory:
+            type: string
+            default: $CIRCLE_WORKING_DIRECTORY
+          analysis_result_max_wait:
+            type: integer
+            default: 300
+          analysis_result_polling_interval:
+            type: integer
+            default: 10
+          fs_debug:
+            type: boolean
+            default: false
+        executor:
+          name: python/default
+          tag: "3.8"
+
+        steps:
+        - announce_start:
+            mode: "async_init"
+
+        - checkout
+
+        - run:
+            command: mkdir -p soos/workspace
+            name: Create SOOS Workspace Folder
+
+        - run:
+            command: |
+              cd soos/workspace
+              curl -s https://api.github.com/repos/soos-io/soos-ci-analysis-python/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | xargs -n 1 curl -LO
+              sha256sum -c soos.sha256
+              sha256sum -c requirements.sha256
+              cd ../../
+            name: Get Latest SOOS Code
+
+        - when:
+            condition: << parameters.fs_debug >>
+            steps:
+              - run: pwd
+              - run: ls -al
+              - run: ls -al soos
+
+        - python/install-packages:
+            pip-dependency-file: soos/workspace/requirements.txt
+            pkg-manager: pip
+
+        - run:
+            command: python ./soos/workspace/soos.py -m=async_init -of=<< parameters.on_failure >> -dte=<< parameters.directories_to_exclude >> -fte=<< parameters.files_to_exclude >> -wd=<< parameters.working_directory >> -armw=<< parameters.analysis_result_max_wait >> -arpi=<< parameters.analysis_result_polling_interval >>
+            name: Execute SOOS CLI
+
+        - persist_to_workspace:
+            # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+            # taken to be the root directory of the workspace.
+            root: soos
+            paths:
+              - workspace
+
+
+      # ##########################
+      analysis_async_result:
+      # ##########################
+        description: |
+            Run the SOOS security analysis in asyn_result mode with full control.
+        parameters:
+          on_failure:
+            type: string
+            default: "fail_the_build"
+          directories_to_exclude:
+            type: string
+            default: ""
+          files_to_exclude:
+            type: string
+            default: ""
+          working_directory:
+            type: string
+            default: $CIRCLE_WORKING_DIRECTORY
+          analysis_result_max_wait:
+            type: integer
+            default: 300
+          analysis_result_polling_interval:
+            type: integer
+            default: 10
+          fs_debug:
+            type: boolean
+            default: false
+        executor:
+          name: python/default
+          tag: "3.8"
+
+        steps:
+        - announce_start:
+            mode: "async_result"
+
+        - checkout
+
+        - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+            at: soos
+
+        - when:
+            condition: << parameters.fs_debug >>
+            steps:
+              - run: pwd
+              - run: ls -al
+              - run: ls -al soos
+
+        - python/install-packages:
+            pip-dependency-file: soos/workspace/requirements.txt
+            pkg-manager: pip
+
+        - when:
+            condition: << parameters.fs_debug >>
+            steps:
+              - run: ls -al soos
+              - run: ls -al soos/workspace
+
+        - run:
+            command: python ./soos/workspace/soos.py -m=async_result -of=<< parameters.on_failure >> -dte=<< parameters.directories_to_exclude >> -fte=<< parameters.files_to_exclude >> -wd=<< parameters.working_directory >> -armw=<< parameters.analysis_result_max_wait >> -arpi=<< parameters.analysis_result_polling_interval >>
+            name: Execute SOOS CLI
+
+#
+# The Workflow is the example of how a user would integrate with the PA ORB
+#
+workflows:
+  main:
+    jobs:
+
+      - soos-orb/analysis_async_init:
+          on_failure: "fail_the_build"
+          directories_to_exclude: ""
+          files_to_exclude: ""
+          working_directory: $CIRCLE_WORKING_DIRECTORY
+          analysis_result_max_wait: 300
+          analysis_result_polling_interval: 10
+          fs_debug: true
+
+      - soos-orb/analysis_async_result:
+          on_failure: "fail_the_build"
+          directories_to_exclude: ""
+          files_to_exclude: ""
+          working_directory: $CIRCLE_WORKING_DIRECTORY
+          analysis_result_max_wait: 300
+          analysis_result_polling_interval: 1
+          fs_debug: true
+
+          requires:
+           - soos-orb/analysis_async_init
