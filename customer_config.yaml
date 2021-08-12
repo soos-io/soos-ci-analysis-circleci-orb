@@ -1,0 +1,32 @@
+version: 2.1
+
+orbs:
+  soos: soos/soos@dev:first
+
+#
+# The Workflow is the example of how a user would integrate with the PA ORB
+#
+workflows:
+  main:
+    jobs:
+
+      - soos/analysis_async_init:
+          on_failure: "fail_the_build"
+          directories_to_exclude: ""
+          files_to_exclude: ""
+          working_directory: $CIRCLE_WORKING_DIRECTORY
+          analysis_result_max_wait: 300
+          analysis_result_polling_interval: 10
+          fs_debug: true
+
+      - soos/analysis_async_result:
+          on_failure: "fail_the_build"
+          directories_to_exclude: ""
+          files_to_exclude: ""
+          working_directory: $CIRCLE_WORKING_DIRECTORY
+          analysis_result_max_wait: 300
+          analysis_result_polling_interval: 1
+          fs_debug: true
+
+          requires:
+           - soos/analysis_async_init
