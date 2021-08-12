@@ -1,5 +1,5 @@
 version: 2.1
-description: Use SOOS to find, fix and monitor known vulnerabilities in your app dependencies. To use this orb you need to have a registered account with SOOS and and API token.
+description: Use SOOS to find, fix and monitor known vulnerabilities in your app dependencies. To use this orb you need to have a registered account with SOOS and an API token.
 
 # ***************************
 orbs:
@@ -91,7 +91,7 @@ jobs:
         name: Get Latest SOOS Code
 
     - python/install-packages:
-        pip-dependency-file: soos/workspace/soos.txt
+        pip-dependency-file: soos/workspace/requirements.txt
         pkg-manager: pip
 
 
@@ -158,14 +158,14 @@ jobs:
           cd soos/workspace
           curl -s https://api.github.com/repos/SOOS/soos-ci-analysis-python/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | xargs -n 1 curl -LO          
           sha256sum -c soos.sha256
-          sha256sum -c soos.sha256
+          sha256sum -c requirements.sha256
           cd ../../
         name: Get Latest SOOS Code
 
     #- python/install-packages:
     #    pkg-manager: pip
     - python/install-packages:
-        pip-dependency-file: soos/workspace/soos.txt
+        pip-dependency-file: soos/workspace/requirements.txt
         pkg-manager: pip
 
     - when:
@@ -237,7 +237,7 @@ jobs:
           cd soos/workspace
           curl -s https://api.github.com/repos/SOOS/soos-ci-analysis-python/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | xargs -n 1 curl -LO          
           sha256sum -c soos.sha256
-          sha256sum -c soos.sha256
+          sha256sum -c requirements.sha256
           cd ../../
         name: Get Latest SOOS Code
 
@@ -249,7 +249,7 @@ jobs:
           - run: ls -al soos
 
     - python/install-packages:
-        pip-dependency-file: soos/workspace/soos.txt
+        pip-dependency-file: soos/workspace/requirements.txt
         pkg-manager: pip
 
     - run:
