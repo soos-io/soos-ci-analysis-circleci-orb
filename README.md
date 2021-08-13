@@ -1,6 +1,6 @@
-# soos circleci-orb
+# SOOS Circle CI Orb
 
-A [CircleCI Orb](https://circleci.com/docs/2.0/orb-intro/) for using [soos](https://soos.io) to check for
+A [CircleCI Orb](https://circleci.com/docs/2.0/orb-intro/) for using [SOOS](https://soos.io) to check for
 vulnerabilities in your projects.
 
 You can use the Orb as follows:
@@ -63,7 +63,7 @@ The SOOS Action has environment variables which are passed to the action using `
 | SOOS_API_KEY | Provided to you when subscribing to SOOS services. |
 
 
-## EXAMPLE: Asynchronous scan that contains other CI logic between the two soos jobs:
+## EXAMPLE: "Asynchronous"--run an asynchronous scan that contains other CI logic between the two SOOS jobs:
 
 ```yaml
 version: 2.1
@@ -113,7 +113,7 @@ workflows:
 | SOOS_CLIENT_ID | [redacted] |
 | SOOS_API_KEY | [redacted] |
 
-## EXAMPLE: Synchronous scan that continues running until analysis complete or timeout reached:
+## EXAMPLE: "Run and Wait"--run a synchronous scan that continues until either the analysis is completed or a timeout is reached:
 
 ```yaml
 version: 2.1
@@ -149,7 +149,7 @@ workflows:
 | SOOS_API_KEY | [redacted] |
 
 
-## EXAMPLE: "Fire and Forget" scan that runs and the analysis result is inconsequential to the CI build.
+## EXAMPLE: "Fire and Forget"--run a scan where the analysis result is inconsequential to the CI build.
 
 ```yaml
 version: 2.1
