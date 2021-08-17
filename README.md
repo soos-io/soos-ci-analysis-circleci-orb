@@ -12,7 +12,7 @@ orbs:
   soos: soos/soos@dev:first
 
 #
-# The Workflow is the example of how a user would integrate with the PA ORB
+# The Workflow is the example of how a user would integrate with the SOOS ORB
 #
 workflows:
   main:
