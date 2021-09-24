@@ -1,0 +1,597 @@
+version: 2.1
+description: Use SOOS to find, fix and monitor known vulnerabilities in your app dependencies. To use this orb you need to have a registered account with SOOS and an API token.
+
+# ***************************
+commands:
+# ***************************
+  announce_start:
+    parameters:
+      mode:
+        type: string
+        default: "run_and_wait"
+    steps:
+      - run: echo "BEGIN SOOS << parameters.mode >>"
+      - run: echo "WORKING DIRECTORY $CIRCLE_WORKING_DIRECTORY"
+# ***************************
+# ***************************
+  run-analysis:
+    description: >
+      This command executes the SOOS analysis.
+    # What will this command do?
+    # Descriptions should be short, simple, and clear.
+    parameters:
+      project_name:
+        default: "SOOS CircleCI Template"
+        description: >
+          The project name that will be displayed on the dashboard
+        type: string
+      integration_name:
+        default: "CircleCI"
+        type: string
+      client_id:
+        type: string
+      api_key:
+        type: string
+      mode:
+        default: "run_and_wait"
+        description: >
+          This parameter dictates type of analysis:
+           - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
+           - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
+           - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
+        type: string
+      on_failure:
+        type: string
+        default: "fail_the_build"
+      directories_to_exclude:
+        type: string
+        default: "soos"
+      files_to_exclude:
+        type: string
+        default: ""
+      working_directory:
+        type: string
+        default: "/home/circleci/integration-test-circleci"
+      analysis_result_max_wait:
+        type: integer
+        default: 300
+      analysis_result_polling_interval:
+        type: integer
+        default: 10
+      fs_debug:
+        type: boolean
+        default: false
+      api_base_url:
+        type: string
+        default: "https://api.soos.io/api/"
+    steps: # steps that comprise the `build` job
+      - checkout # check out source code to working directory
+      - run:
+          name: Create the soos dir
+          command: mkdir -p soos/workspace
+      - run: |
+          cd soos/workspace
+          curl -s https://api.github.com/repos/soos-io/soos-ci-analysis-python/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | xargs -n 1 curl -LO
+      - run:
+          command: |
+            pipenv install -r soos/workspace/requirements.txt
+            pip install requests
+          name: Install Python deps in a venv
+      - run:
+          name: 'Run Analysis'
+          environment: # environment variables for primary container
+            SOOS_PROJECT_NAME: '<<parameters.project_name>>'
+            # ARGS WHERE CUSTOMIZATION IS OPTIONAL:
+            SOOS_MODE: '<<parameters.mode>>'
+            SOOS_ON_FAILURE: '<<parameters.on_failure>>'
+            SOOS_DIRS_TO_EXCLUDE: '<<parameters.directories_to_exclude>>'
+            SOOS_FILES_TO_EXCLUDE: '<<parameters.files_to_exclude>>'
+            SOOS_ANALYSIS_RESULT_MAX_WAIT: '<<parameters.analysis_result_max_wait>>'
+            SOOS_ANALYSIS_RESULT_POLLING_INTERVAL: '<<parameters.analysis_result_polling_interval>>'
+            # ARGS WHERE CUSTOMIZATION IS OPTIONAL, BUT UNLIKELY:
+            SOOS_API_BASE_URL: '<<parameters.api_base_url>>'
+            # CI ENGINE SPECIFIC:
+            SOOS_CHECKOUT_DIR: '<<parameters.working_directory>>'
+            SOOS_COMMIT_HASH: ${CIRCLE_SHA1}
+            SOOS_BRANCH_NAME: ${CIRCLE_BRANCH}
+            SOOS_BRANCH_URI: ""                 # ENTER BRANCH URI HERE IF KNOWN
+            SOOS_BUILD_VERSION: ""              # ENTER BUILD VERSION HERE IF KNOWN
+            SOOS_BUILD_URI: ${CIRCLE_BUILD_URL}
+            SOOS_OPERATING_ENVIRONMENT: ""      # ENTER OPERATING ENVIRONMENT HERE IF KNOWN (default will be provided)
+            SOOS_INTEGRATION_NAME: '<<parameters.integration_name>>'
+            SOOS_CLIENT_ID: '<<parameters.client_id>>'
+            SOOS_API_KEY: '<<parameters.api_key>>'
+          command: |
+            python soos/workspace/soos.py -m="${SOOS_MODE}" -of="${SOOS_ON_FAILURE}" -dte="${SOOS_DIRS_TO_EXCLUDE}" -fte="${SOOS_FILES_TO_EXCLUDE}" -wd="${SOOS_CHECKOUT_DIR}" -armw=${SOOS_ANALYSIS_RESULT_MAX_WAIT} -arpi=${SOOS_ANALYSIS_RESULT_POLLING_INTERVAL} -buri="${SOOS_API_BASE_URL}" -scp="${SOOS_CHECKOUT_DIR}" -pn="${SOOS_PROJECT_NAME}"
+# ***************************
+# ***************************
+executors:
+  python:
+    description: >
+      This is the Python executor used to run the script.
+    docker:
+      - image: 'cimg/python:<<parameters.tag>>'
+        environment: # environment variables for primary container
+          SOOS_PROJECT_NAME: '<<parameters.project_name>>'
+          # ARGS WHERE CUSTOMIZATION IS OPTIONAL:
+          SOOS_MODE: '<<parameters.mode>>'
+          SOOS_ON_FAILURE: '<<parameters.on_failure>>'
+          SOOS_DIRS_TO_EXCLUDE: '<<parameters.directories_to_exclude>>'
+          SOOS_FILES_TO_EXCLUDE: '<<parameters.files_to_exclude>>'
+          SOOS_ANALYSIS_RESULT_MAX_WAIT: '<<parameters.analysis_result_max_wait>>'
+          SOOS_ANALYSIS_RESULT_POLLING_INTERVAL: '<<parameters.analysis_result_polling_interval>>'
+          # ARGS WHERE CUSTOMIZATION IS OPTIONAL, BUT UNLIKELY:
+          SOOS_API_BASE_URL: '<<parameters.api_base_url>>'
+          # CI ENGINE SPECIFIC:
+          SOOS_CHECKOUT_DIR: '<<parameters.working_directory>>'
+          SOOS_COMMIT_HASH: ${CIRCLE_SHA1}
+          SOOS_BRANCH_NAME: ${CIRCLE_BRANCH}
+          SOOS_BRANCH_URI: ""                 # ENTER BRANCH URI HERE IF KNOWN
+          SOOS_BUILD_VERSION: ""              # ENTER BUILD VERSION HERE IF KNOWN
+          SOOS_BUILD_URI: ${CIRCLE_BUILD_URL}
+          SOOS_OPERATING_ENVIRONMENT: ""      # ENTER OPERATING ENVIRONMENT HERE IF KNOWN (default will be provided)
+          SOOS_INTEGRATION_NAME: '<<parameters.integration_name>>'
+          SOOS_CLIENT_ID: '<<parameters.client_id>>'
+          SOOS_API_KEY: '<<parameters.api_key>>'
+    parameters:
+      tag:
+        default: 3.9.7
+        description: >
+          Pick a specific circleci/node image variant:
+          https://hub.docker.com/r/cimg/node/tags
+        type: string
+      project_name:
+        default: "SOOS CircleCI Template"
+        description: >
+          The project name that will be displayed on the dashboard
+        type: string
+      integration_name:
+        default: "CircleCI"
+        type: string
+      client_id:
+        type: string
+      api_key:
+        type: string
+      mode:
+        default: "run_and_wait"
+        description: >
+          This parameter dictates type of analysis:
+          - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
+          - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
+          - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
+        type: string
+      on_failure:
+        type: string
+        default: "fail_the_build"
+      directories_to_exclude:
+        type: string
+        default: "soos"
+      files_to_exclude:
+        type: string
+        default: ""
+      working_directory:
+        type: string
+        default: "/home/circleci/integration-test-circleci"
+      analysis_result_max_wait:
+        type: integer
+        default: 300
+      analysis_result_polling_interval:
+        type: integer
+        default: 10
+      fs_debug:
+        type: boolean
+        default: false
+      api_base_url:
+        type: string
+        default: "https://api.soos.io/api/"
+# ***************************
+# ***************************
+examples:
+  async-analysis-with-blocking-result:
+    description: |
+      Run the SOOS security analysis in async_init mode.
+      The process will first execute the async_init job.
+      After async_init, the process will execute the async_result job to get results.
+      Functionally equivelant to the synchronous-analysis-with-blocking-result example
+      and is for illustrative purposes only.
+    usage:
+      version: "2.1"
+      orbs:
+        soos: soos/soos@x.y.z
+      workflows:
+        main:
+          jobs:
+            # POSSIBLE STEPS FOR YOUR ORGANIZATION'S CI WORKFLOW GO HERE
+            - soos/analysis_async_init:
+                client_id: "<<SOOS Client Id>>"
+                api_key: "<<SOOS API Key>>"
+            # POSSIBLE STEPS FOR YOUR ORGANIZATION'S CI WORKFLOW GO HERE
+
+            - soos/analysis_async_result:
+                client_id: "<<SOOS Client Id>>"
+                api_key: "<<SOOS API Key>>"
+
+                requires:
+                  - soos/analysis_async_init
+
+            # POSSIBLE STEPS FOR YOUR ORGANIZATION'S CI WORKFLOW GO HERE
+
+  synchronous-analysis-with-blocking-result:
+    description: >
+      Run the SOOS security analysis in run_and_wait mode.
+      The process will start and completely end within one job.
+    usage:
+      version: "2.1"
+      orbs:
+        soos: soos/soos@x.y.z
+      workflows:
+        main:
+          jobs:
+            # POSSIBLE STEPS FOR YOUR ORGANIZATION'S CI WORKFLOW GO HERE
+            - soos/analysis_run_and_wait:
+                client_id: "<<SOOS Client Id>>"
+                api_key: "<<SOOS API Key>>"
+            # POSSIBLE STEPS FOR YOUR ORGANIZATION'S CI WORKFLOW GO HERE
+
+  async-analysis-init:
+    description: >
+      Run the SOOS security analysis in async_init mode.
+      The process will issue a request to Package Aware to begin analysis.
+      The process will not wait for the results of the analysis.
+      May be run as a standalone process inside of a CI workflow or paired
+      with the async-analysis-result example (with dependency set on
+      the async-analysis-init job as shown in the async-analysis-with-blocking-result
+      example)
+    usage:
+      version: "2.1"
+      orbs:
+        soos: soos/soos@x.y.z
+      workflows:
+        main:
+          jobs:
+
+            # POSSIBLE STEPS FOR YOUR ORGANIZATION'S CI WORKFLOW GO HERE
+            - soos/analysis_async_init:
+                client_id: "<<SOOS Client Id>>"
+                api_key: "<<SOOS API Key>>"
+
+            # POSSIBLE STEPS FOR YOUR ORGANIZATION'S CI WORKFLOW GO HERE
+
+  async-analysis-result:
+    description: >
+      Run the SOOS security analysis in async_result mode.
+      The process will sit and wait until the results of the analysis
+      performed in the async-analysis-init example are complete (or time-out occurs.)
+
+    usage:
+      version: "2.1"
+      orbs:
+        soos: soos/soos@x.y.z
+      workflows:
+        main:
+          jobs:
+            # POSSIBLE STEPS FOR YOUR ORGANIZATION'S CI WORKFLOW GO HERE
+            - packageaware/analysis_async_result:
+                client_id: "<<SOOS Client Id>>"
+                api_key: "<<SOOS API Key>>"
+
+                requires:
+                  - soos/analysis_async_init
+
+            # POSSIBLE STEPS FOR YOUR ORGANIZATION'S CI WORKFLOW GO HERE
+# ***************************
+# ***************************
+jobs:
+  # ***************************
+  soos-analysis:
+  # ***************************
+    description: >
+      Run the SOOS security analysis in custom mode with full control.
+      Mode parameter will dictate type of analysis:
+        a) run_and_wait: The process will submit manifest files and wait for analysis result before exiting
+        b) async_init: The process will submit manifest files and exit. Requires a subsequent
+            call with mode "async_result" to get analysis result.
+        c) async_result: The process will search for analysis URL file written in async_init process
+            and execute call to URL until analysis results are available.
+    # What will this job do?
+    # Descriptions should be short, simple, and clear.
+    parameters:
+      project_name:
+        default: "SOOS CircleCI Template"
+        description: >
+          The project name that will be displayed on the dashboard
+        type: string
+      integration_name:
+        default: "CircleCI"
+        type: string
+      client_id:
+        type: string
+      api_key:
+        type: string
+      mode:
+        default: "run_and_wait"
+        description: >
+          This parameter dictates type of analysis:
+           - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
+           - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
+           - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
+        type: string
+      on_failure:
+        type: string
+        default: "fail_the_build"
+      directories_to_exclude:
+        type: string
+        default: "soos"
+      files_to_exclude:
+        type: string
+        default: ""
+      working_directory:
+        type: string
+        default: "/home/circleci/integration-test-circleci"
+      analysis_result_max_wait:
+        type: integer
+        default: 300
+      analysis_result_polling_interval:
+        type: integer
+        default: 10
+      fs_debug:
+        type: boolean
+        default: false
+      api_base_url:
+        type: string
+        default: "https://api.soos.io/api/"
+    working_directory: ~/integration-test-circleci
+    executor:
+      name: python
+      project_name: '<<parameters.project_name>>'
+      integration_name: '<<parameters.integration_name>>'
+      client_id: '<<parameters.client_id>>'
+      api_key: '<<parameters.api_key>>'
+      mode: '<<parameters.mode>>'
+      on_failure: '<<parameters.on_failure>>'
+      directories_to_exclude: '<<parameters.directories_to_exclude>>'
+      files_to_exclude: '<<parameters.files_to_exclude>>'
+      working_directory: '<<parameters.working_directory>>'
+      analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
+      analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
+      fs_debug: '<<parameters.fs_debug>>'
+      api_base_url: '<<parameters.api_base_url>>'
+    steps:
+      - run-analysis:
+          project_name: '<<parameters.project_name>>'
+          integration_name: '<<parameters.integration_name>>'
+          client_id: '<<parameters.client_id>>'
+          api_key: '<<parameters.api_key>>'
+          mode: '<<parameters.mode>>'
+          on_failure: '<<parameters.on_failure>>'
+          directories_to_exclude: '<<parameters.directories_to_exclude>>'
+          files_to_exclude: '<<parameters.files_to_exclude>>'
+          working_directory: '<<parameters.working_directory>>'
+          analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
+          analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
+          fs_debug: '<<parameters.fs_debug>>'
+          api_base_url: '<<parameters.api_base_url>>'
+# ***************************
+
+# ***************************
+  analysis_run_and_wait:
+# ***************************
+    description: >
+      Run the SOOS security analysis in run_and_wait mode with full control.
+    parameters:
+      project_name:
+        default: "SOOS CircleCI Template"
+        description: >
+          The project name that will be displayed on the dashboard
+        type: string
+      integration_name:
+        default: "CircleCI"
+        type: string
+      client_id:
+        type: string
+      api_key:
+        type: string
+      on_failure:
+        type: string
+        default: "fail_the_build"
+      directories_to_exclude:
+        type: string
+        default: "soos"
+      files_to_exclude:
+        type: string
+        default: ""
+      working_directory:
+        type: string
+        default: "/home/circleci/integration-test-circleci"
+      analysis_result_max_wait:
+        type: integer
+        default: 300
+      analysis_result_polling_interval:
+        type: integer
+        default: 10
+      fs_debug:
+        type: boolean
+        default: false
+      api_base_url:
+        type: string
+        default: "https://api.soos.io/api/"
+    working_directory: ~/integration-test-circleci
+    executor:
+      name: python
+      project_name: '<<parameters.project_name>>'
+      integration_name: '<<parameters.integration_name>>'
+      client_id: '<<parameters.client_id>>'
+      api_key: '<<parameters.api_key>>'
+      mode: 'run_and_wait'
+      on_failure: '<<parameters.on_failure>>'
+      directories_to_exclude: '<<parameters.directories_to_exclude>>'
+      files_to_exclude: '<<parameters.files_to_exclude>>'
+      working_directory: '<<parameters.working_directory>>'
+      analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
+      analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
+      fs_debug: '<<parameters.fs_debug>>'
+      api_base_url: '<<parameters.api_base_url>>'
+    steps:
+      - run-analysis:
+          project_name: '<<parameters.project_name>>'
+          integration_name: '<<parameters.integration_name>>'
+          client_id: '<<parameters.client_id>>'
+          api_key: '<<parameters.api_key>>'
+          mode: 'run_and_wait'
+          on_failure: '<<parameters.on_failure>>'
+          directories_to_exclude: '<<parameters.directories_to_exclude>>'
+          files_to_exclude: '<<parameters.files_to_exclude>>'
+          working_directory: '<<parameters.working_directory>>'
+          analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
+          analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
+          fs_debug: '<<parameters.fs_debug>>'
+          api_base_url: '<<parameters.api_base_url>>'
+# ***************************
+# ***************************
+  analysis_async_init:
+# ***************************
+    description: >
+      Run the SOOS security analysis in async_init mode with full control.
+    parameters:
+      project_name:
+        default: "SOOS CircleCI Template"
+        description: >
+          The project name that will be displayed on the dashboard
+        type: string
+      integration_name:
+        default: "CircleCI"
+        type: string
+      client_id:
+        type: string
+      api_key:
+        type: string
+      on_failure:
+        type: string
+        default: "fail_the_build"
+      directories_to_exclude:
+        type: string
+        default: "soos"
+      files_to_exclude:
+        type: string
+        default: ""
+      working_directory:
+        type: string
+        default: "/home/circleci/integration-test-circleci"
+      analysis_result_max_wait:
+        type: integer
+        default: 300
+      analysis_result_polling_interval:
+        type: integer
+        default: 10
+      fs_debug:
+        type: boolean
+        default: false
+      api_base_url:
+        type: string
+        default: "https://api.soos.io/api/"
+    working_directory: ~/integration-test-circleci
+    executor:
+      name: python
+      project_name: '<<parameters.project_name>>'
+      integration_name: '<<parameters.integration_name>>'
+      client_id: '<<parameters.client_id>>'
+      api_key: '<<parameters.api_key>>'
+      mode: 'async_init'
+      on_failure: '<<parameters.on_failure>>'
+      directories_to_exclude: '<<parameters.directories_to_exclude>>'
+      files_to_exclude: '<<parameters.files_to_exclude>>'
+      working_directory: '<<parameters.working_directory>>'
+      analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
+      analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
+      fs_debug: '<<parameters.fs_debug>>'
+      api_base_url: '<<parameters.api_base_url>>'
+    steps:
+      - run-analysis:
+          project_name: '<<parameters.project_name>>'
+          integration_name: '<<parameters.integration_name>>'
+          client_id: '<<parameters.client_id>>'
+          api_key: '<<parameters.api_key>>'
+          mode: 'async_init'
+          on_failure: '<<parameters.on_failure>>'
+          directories_to_exclude: '<<parameters.directories_to_exclude>>'
+          files_to_exclude: '<<parameters.files_to_exclude>>'
+          working_directory: '<<parameters.working_directory>>'
+          analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
+          analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
+          fs_debug: '<<parameters.fs_debug>>'
+          api_base_url: '<<parameters.api_base_url>>'
+# ***************************
+# ***************************
+  analysis_async_result:
+# ***************************
+    description: >
+      Run the SOOS security analysis in async_result mode with full control.
+    parameters:
+      project_name:
+        default: "SOOS CircleCI Template"
+        description: >
+          The project name that will be displayed on the dashboard
+        type: string
+      integration_name:
+        default: "CircleCI"
+        type: string
+      client_id:
+        type: string
+      api_key:
+        type: string
+      on_failure:
+        type: string
+        default: "fail_the_build"
+      directories_to_exclude:
+        type: string
+        default: "soos"
+      files_to_exclude:
+        type: string
+        default: ""
+      working_directory:
+        type: string
+        default: "/home/circleci/integration-test-circleci"
+      analysis_result_max_wait:
+        type: integer
+        default: 300
+      analysis_result_polling_interval:
+        type: integer
+        default: 10
+      fs_debug:
+        type: boolean
+        default: false
+      api_base_url:
+        type: string
+        default: "https://api.soos.io/api/"
+    working_directory: ~/integration-test-circleci
+    executor:
+      name: python
+      project_name: '<<parameters.project_name>>'
+      integration_name: '<<parameters.integration_name>>'
+      client_id: '<<parameters.client_id>>'
+      api_key: '<<parameters.api_key>>'
+      mode: 'async_result'
+      on_failure: '<<parameters.on_failure>>'
+      directories_to_exclude: '<<parameters.directories_to_exclude>>'
+      files_to_exclude: '<<parameters.files_to_exclude>>'
+      working_directory: '<<parameters.working_directory>>'
+      analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
+      analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
+      fs_debug: '<<parameters.fs_debug>>'
+      api_base_url: '<<parameters.api_base_url>>'
+    steps:
+      - run-analysis:
+          project_name: '<<parameters.project_name>>'
+          integration_name: '<<parameters.integration_name>>'
+          client_id: '<<parameters.client_id>>'
+          api_key: '<<parameters.api_key>>'
+          mode: 'async_result'
+          on_failure: '<<parameters.on_failure>>'
+          directories_to_exclude: '<<parameters.directories_to_exclude>>'
+          files_to_exclude: '<<parameters.files_to_exclude>>'
+          working_directory: '<<parameters.working_directory>>'
+          analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
+          analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
+          fs_debug: '<<parameters.fs_debug>>'
+          api_base_url: '<<parameters.api_base_url>>'
+# ***************************
