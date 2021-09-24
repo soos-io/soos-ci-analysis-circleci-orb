@@ -9,7 +9,7 @@ You can use the Orb as follows:
 version: 2.1
 
 orbs:
-  soos: soos/soos@<<version>>
+  soos: soos/soos@x.y.z
 
 #
 # The Workflow is the example of how a user would integrate with the PA ORB
@@ -19,33 +19,25 @@ workflows:
     jobs:
 
       - soos/analysis_async_init:
-          on_failure: "fail_the_build"
-          directories_to_exclude: ""
-          files_to_exclude: ""
-          working_directory: $CIRCLE_WORKING_DIRECTORY
-          analysis_result_max_wait: 300
-          analysis_result_polling_interval: 10
-          fs_debug: true
+          client_id: "<<SOOS Client Id>>"
+          api_key: "<<SOOS API Key>>"
 
       - soos/analysis_async_result:
-          on_failure: "fail_the_build"
-          directories_to_exclude: ""
-          files_to_exclude: ""
-          working_directory: $CIRCLE_WORKING_DIRECTORY
-          analysis_result_max_wait: 300
-          analysis_result_polling_interval: 1
-          fs_debug: true
+          client_id: "<<SOOS Client Id>>"
+          api_key: "<<SOOS API Key>>"
 
           requires:
-           - packageaware/analysis_async_init
+           - soos/analysis_async_init
         
 ```
 
-The PackageAware Action has properties which are passed to the action using `with`.
+The SOOS Action has properties which are passed to the action using `with`.
 
 | Property | Default | Description |
 | --- | --- | --- |
-| on_failure | "fail_the_build"  | Flag indicating whether or not to return an error code if errors are found in the Package Aware script or Package Aware analysis.
+| client_id | ""  | `Required` - SOOS Client Id. Get it from SOOS Application.
+| api_key | ""  | `Required` - SOOS API Key. Get it from SOOS Application
+| on_failure | "fail_the_build"  | Flag indicating whether or not to return an error code if errors are found in the SOOS script or SOOS analysis.
 | directories_to_exclude | ""  | List (comma separated) of directories (relative to ./) to exclude from the search for manifest files. Example - Correct: bin/start/ ... Example - Incorrect: ./bin/start/ ... Example - Incorrect: /bin/start/'|
 | files_to_exclude | "" | List (comma separated) of files (relative to ./) to exclude from the search for manifest files. Example - Correct: bin/start/manifest.txt ... Example - Incorrect: ./bin/start/manifest.txt ... Example - Incorrect: /bin/start/manifest.txt' |
 | analysis_result_max_wait | 300 | Maximum seconds to wait for Analysis Result before exiting with error. |
@@ -56,20 +48,20 @@ The SOOS Action has environment variables which are passed to the action using `
 
 | Property | Description |
 | --- | --- |
-| SOOS_PROJECT_NAME | A custom project name that will present itself as a collection of test results within your packageaware.io dashboard. |
-| SOOS_BASE_URI | The API BASE URI provided to you when subscribing to Package Aware services. |
+| SOOS_PROJECT_NAME | A custom project name that will present itself as a collection of test results within your soos.io dashboard. |
+| SOOS_BASE_URI | The API BASE URI provided to you when subscribing to SOOS services. |
 | SOOS_ROOT_CODE_PATH | The relative path from the workspace to search for manifest files to analyze. |
-| SOOS_CLIENT_ID | Provided to you when subscribing to Package Aware services. |
-| SOOS_API_KEY | Provided to you when subscribing to Package Aware services. |
+| SOOS_CLIENT_ID | Provided to you when subscribing to SOOS services. |
+| SOOS_API_KEY | Provided to you when subscribing to SOOS services. |
 
 
-## EXAMPLE: Asynchronous scan that contains other CI logic between the two PackageAware jobs:
+## EXAMPLE: Asynchronous scan that contains other CI logic between the two SOOS jobs:
 
 ```yaml
 version: 2.1
 
 orbs:
-  packageaware: packageaware/packageaware@dev:first
+  soos: soos/soos@x.y.z
 
 workflows:
   main:
@@ -77,29 +69,19 @@ workflows:
 
       # NOTE: YOUR OTHER JOBS GO HERE
 
-      - packageaware/analysis_async_init:
-          on_failure: "fail_the_build"
-          directories_to_exclude: ""
-          files_to_exclude: ""
-          working_directory: $CIRCLE_WORKING_DIRECTORY
-          analysis_result_max_wait: 300
-          analysis_result_polling_interval: 10
-          fs_debug: true
+      - soos/analysis_async_init:
+          client_id: "<<SOOS Client Id>>"
+          api_key: "<<SOOS API Key>>"
 
       # NOTE: YOUR OTHER JOBS GO HERE
 
-      - packageaware/analysis_async_result:
-          on_failure: "fail_the_build"
-          directories_to_exclude: ""
-          files_to_exclude: ""
-          working_directory: $CIRCLE_WORKING_DIRECTORY
-          analysis_result_max_wait: 300
-          analysis_result_polling_interval: 1
-          fs_debug: true
+      - soos/analysis_async_result:
+          client_id: "<<SOOS Client Id>>"
+          api_key: "<<SOOS API Key>>"
 
           # NOTE: RUNNING ASYNCHRONOUSLY WILL REQUIRE A DEPENDENCY TO BE ESTABLISHED AGAINST THE "analysis_async_init" JOB
           requires:
-           - packageaware/analysis_async_init
+           - soos/analysis_async_init
 
         # NOTE: YOUR OTHER JOBS GO HERE
         
@@ -108,7 +90,7 @@ workflows:
 | Property | Value |
 | --- | --- |
 | SOOS_PROJECT_NAME | "My Project Name" |
-| SOOS_BASE_URI | "https://api.packageaware.io/api/" |
+| SOOS_BASE_URI | "https://api.soos.io/api/" |
 | SOOS_ROOT_CODE_PATH | "./" |
 | SOOS_CLIENT_ID | [redacted] |
 | SOOS_API_KEY | [redacted] |
@@ -119,7 +101,7 @@ workflows:
 version: 2.1
 
 orbs:
-  packageaware: packageaware/packageaware@dev:first
+  soos: soos/soos@x.y.z
 
 workflows:
   main:
@@ -127,14 +109,9 @@ workflows:
 
       # NOTE: YOUR OTHER JOBS GO HERE
 
-      - packageaware/analysis_run_and_wait:
-          on_failure: "fail_the_build"
-          directories_to_exclude: ""
-          files_to_exclude: ""
-          working_directory: $CIRCLE_WORKING_DIRECTORY
-          analysis_result_max_wait: 300
-          analysis_result_polling_interval: 10
-          fs_debug: true
+      - soos/analysis_run_and_wait:
+          client_id: "<<SOOS Client Id>>"
+          api_key: "<<SOOS API Key>>"
 
       # NOTE: YOUR OTHER JOBS GO HERE
       
@@ -143,7 +120,7 @@ workflows:
 | Property | Value |
 | --- | --- |
 | SOOS_PROJECT_NAME | "My Project Name" |
-| SOOS_BASE_URI | "https://api.packageaware.io/api/" |
+| SOOS_BASE_URI | "https://api.soos.io/api/" |
 | SOOS_ROOT_CODE_PATH | "./" |
 | SOOS_CLIENT_ID | [redacted] |
 | SOOS_API_KEY | [redacted] |
@@ -155,7 +132,7 @@ workflows:
 version: 2.1
 
 orbs:
-  packageaware: packageaware/packageaware@dev:first
+  soos: soos/soos@x.y.z
 
 workflows:
   main:
@@ -163,14 +140,9 @@ workflows:
 
       # NOTE: YOUR OTHER JOBS GO HERE
 
-      - packageaware/analysis_async_init:
-          on_failure: "fail_the_build"
-          directories_to_exclude: ""
-          files_to_exclude: ""
-          working_directory: $CIRCLE_WORKING_DIRECTORY
-          analysis_result_max_wait: 300
-          analysis_result_polling_interval: 10
-          fs_debug: true
+      - soos/analysis_async_init:
+          client_id: "<<SOOS Client Id>>"
+          api_key: "<<SOOS API Key>>"
 
       # NOTE: YOUR OTHER JOBS GO HERE
       
@@ -179,7 +151,7 @@ workflows:
 | Property | Value |
 | --- | --- |
 | SOOS_PROJECT_NAME | "My Project Name" |
-| SOOS_BASE_URI | "https://api.packageaware.io/api/" |
+| SOOS_BASE_URI | "https://api.soos.io/api/" |
 | SOOS_ROOT_CODE_PATH | "./" |
 | SOOS_CLIENT_ID | [redacted] |
 | SOOS_API_KEY | [redacted] |
