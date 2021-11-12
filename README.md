@@ -61,7 +61,7 @@ The SOOS Action has environment variables which are passed to the action using `
 version: 2.1
 
 orbs:
-  soos: soos-io/soos@1.0.1
+  soos: soos-io/sca@1.0.0
 
 workflows:
   main:
@@ -101,7 +101,7 @@ workflows:
 version: 2.1
 
 orbs:
-  soos: soos-io/soos@1.0.1
+  soos: soos-io/sca@1.0.0
 
 workflows:
   main:
@@ -132,7 +132,7 @@ workflows:
 version: 2.1
 
 orbs:
-  soos: soos-io/soos@1.0.1
+  soos: soos-io/sca@1.0.0
 
 workflows:
   main:
