@@ -1,4 +1,4 @@
-# SOOS Security Analysis CI for Circle CI
+# SOOS SCA for Circle CI
 
 A [CircleCI Orb](https://circleci.com/docs/2.0/orb-intro/) for using [SOOS](https://soos.io) to check for
 vulnerabilities in your projects.
