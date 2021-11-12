@@ -1,18 +1,11 @@
 version: 2.1
 description: Use SOOS to find, fix and monitor known vulnerabilities in your app dependencies. To use this orb you need to have a registered account with SOOS and an API token.
+display:
+  source_url: https://github.com/soos-io/soos-ci-analysis-circleci-orb
+  home_url: https://soos.io/
 
 # ***************************
 commands:
-# ***************************
-  announce_start:
-    parameters:
-      mode:
-        type: string
-        default: "run_and_wait"
-    steps:
-      - run: echo "BEGIN SOOS << parameters.mode >>"
-      - run: echo "WORKING DIRECTORY $CIRCLE_WORKING_DIRECTORY"
-# ***************************
 # ***************************
   run-analysis:
     description: >

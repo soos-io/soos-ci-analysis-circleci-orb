@@ -9,7 +9,7 @@ You can use the Orb as follows:
 version: 2.1
 
 orbs:
-  soos: soos/soos@x.y.z
+  soos: soos-io/sca@x.y.z
 
 #
 # The Workflow is the example of how a user would integrate with the PA ORB
@@ -61,7 +61,7 @@ The SOOS Action has environment variables which are passed to the action using `
 version: 2.1
 
 orbs:
-  soos: soos/soos@x.y.z
+  soos: soos-io/soos@1.0.0
 
 workflows:
   main:
@@ -101,7 +101,7 @@ workflows:
 version: 2.1
 
 orbs:
-  soos: soos/soos@x.y.z
+  soos: soos-io/soos@1.0.0
 
 workflows:
   main:
@@ -132,7 +132,7 @@ workflows:
 version: 2.1
 
 orbs:
-  soos: soos/soos@x.y.z
+  soos: soos-io/soos@1.0.0
 
 workflows:
   main:
