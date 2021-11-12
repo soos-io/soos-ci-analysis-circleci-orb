@@ -190,7 +190,7 @@ examples:
     usage:
       version: "2.1"
       orbs:
-        soos: soos/soos@x.y.z
+        soos: soos-io/sca@X.Y.Z
       workflows:
         main:
           jobs:
@@ -216,7 +216,7 @@ examples:
     usage:
       version: "2.1"
       orbs:
-        soos: soos/soos@x.y.z
+        soos: soos-io/sca@X.Y.Z
       workflows:
         main:
           jobs:
@@ -238,7 +238,7 @@ examples:
     usage:
       version: "2.1"
       orbs:
-        soos: soos/soos@x.y.z
+        soos: soos-io/sca@X.Y.Z
       workflows:
         main:
           jobs:
@@ -259,7 +259,7 @@ examples:
     usage:
       version: "2.1"
       orbs:
-        soos: soos/soos@x.y.z
+        soos: soos-io/sca@X.Y.Z
       workflows:
         main:
           jobs:
