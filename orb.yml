@@ -130,8 +130,8 @@ executors:
       tag:
         default: 3.9.7
         description: >
-          Pick a specific circleci/node image variant:
-          https://hub.docker.com/r/cimg/node/tags
+          Pick a specific circleci/python image variant:
+          https://hub.docker.com/r/cimg/python/tags
         type: string
       project_name:
         default: "SOOS CircleCI Template"
@@ -146,13 +146,14 @@ executors:
       api_key:
         type: string
       mode:
-        default: "run_and_wait"
         description: >
           This parameter dictates type of analysis:
           - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
           - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
           - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
-        type: string
+        type: enum
+        enum: ["run_and_wait", "async_init", "async_result"]
+        default: "run_and_wait"
       on_failure:
         type: string
         default: "fail_the_build"
@@ -203,7 +204,6 @@ examples:
             - soos/analysis_async_result:
                 client_id: "<<SOOS Client Id>>"
                 api_key: "<<SOOS API Key>>"
-
                 requires:
                   - soos/analysis_async_init
 
@@ -267,7 +267,6 @@ examples:
             - packageaware/analysis_async_result:
                 client_id: "<<SOOS Client Id>>"
                 api_key: "<<SOOS API Key>>"
-
                 requires:
                   - soos/analysis_async_init
 
@@ -280,12 +279,7 @@ jobs:
   # ***************************
     description: >
       Run the SOOS security analysis in custom mode with full control.
-      Mode parameter will dictate type of analysis:
-        a) run_and_wait: The process will submit manifest files and wait for analysis result before exiting
-        b) async_init: The process will submit manifest files and exit. Requires a subsequent
-            call with mode "async_result" to get analysis result.
-        c) async_result: The process will search for analysis URL file written in async_init process
-            and execute call to URL until analysis results are available.
+      Mode parameter will dictate type of analysis
     # What will this job do?
     # Descriptions should be short, simple, and clear.
     parameters:
@@ -459,7 +453,8 @@ jobs:
       api_key:
         type: string
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
