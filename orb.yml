@@ -26,15 +26,17 @@ commands:
       api_key:
         type: string
       mode:
-        default: "run_and_wait"
         description: >
           This parameter dictates type of analysis:
            - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
            - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
            - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
-        type: string
+        type: enum 
+        enum: ["run_and_wait", "async_init", "async_result"]
+        default: "run_and_wait"
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
@@ -155,7 +157,8 @@ executors:
         enum: ["run_and_wait", "async_init", "async_result"]
         default: "run_and_wait"
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
@@ -302,9 +305,11 @@ jobs:
            - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
            - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
            - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
-        type: string
+        type: enum
+        enum: ["run_and_wait", "async_init", "async_result"]
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
@@ -379,7 +384,8 @@ jobs:
       api_key:
         type: string
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
@@ -528,7 +534,8 @@ jobs:
       api_key:
         type: string
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
