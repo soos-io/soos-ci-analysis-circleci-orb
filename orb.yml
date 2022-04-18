@@ -92,12 +92,11 @@ commands:
             SOOS_BRANCH_URI: ""                 # ENTER BRANCH URI HERE IF KNOWN
             SOOS_BUILD_VERSION: ""              # ENTER BUILD VERSION HERE IF KNOWN
             SOOS_BUILD_URI: ${CIRCLE_BUILD_URL}
-            SOOS_OPERATING_ENVIRONMENT: ""      # ENTER OPERATING ENVIRONMENT HERE IF KNOWN (default will be provided)
             SOOS_INTEGRATION_NAME: '<<parameters.integration_name>>'
             SOOS_CLIENT_ID: '<<parameters.client_id>>'
             SOOS_API_KEY: '<<parameters.api_key>>'
           command: |
-            python soos/workspace/soos.py -m="${SOOS_MODE}" -of="${SOOS_ON_FAILURE}" -dte="${SOOS_DIRS_TO_EXCLUDE}" -fte="${SOOS_FILES_TO_EXCLUDE}" -wd="${SOOS_CHECKOUT_DIR}" -armw=${SOOS_ANALYSIS_RESULT_MAX_WAIT} -arpi=${SOOS_ANALYSIS_RESULT_POLLING_INTERVAL} -buri="${SOOS_API_BASE_URL}" -scp="${SOOS_CHECKOUT_DIR}" -pn="${SOOS_PROJECT_NAME}"
+            python soos/workspace/soos.py -m="${SOOS_MODE}" -of="${SOOS_ON_FAILURE}" -dte="${SOOS_DIRS_TO_EXCLUDE}" -fte="${SOOS_FILES_TO_EXCLUDE}" -wd="${SOOS_CHECKOUT_DIR}" -armw=${SOOS_ANALYSIS_RESULT_MAX_WAIT} -arpi=${SOOS_ANALYSIS_RESULT_POLLING_INTERVAL} -blduri="${SOOS_BUILD_URI}" -buri="${SOOS_API_BASE_URL}" -scp="${SOOS_CHECKOUT_DIR}" -pn="${SOOS_PROJECT_NAME}"
 # ***************************
 # ***************************
 executors:
@@ -124,7 +123,6 @@ executors:
           SOOS_BRANCH_URI: ""                 # ENTER BRANCH URI HERE IF KNOWN
           SOOS_BUILD_VERSION: ""              # ENTER BUILD VERSION HERE IF KNOWN
           SOOS_BUILD_URI: ${CIRCLE_BUILD_URL}
-          SOOS_OPERATING_ENVIRONMENT: ""      # ENTER OPERATING ENVIRONMENT HERE IF KNOWN (default will be provided)
           SOOS_INTEGRATION_NAME: '<<parameters.integration_name>>'
           SOOS_CLIENT_ID: '<<parameters.client_id>>'
           SOOS_API_KEY: '<<parameters.api_key>>'
