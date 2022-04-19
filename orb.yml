@@ -26,15 +26,17 @@ commands:
       api_key:
         type: string
       mode:
-        default: "run_and_wait"
         description: >
           This parameter dictates type of analysis:
            - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
            - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
            - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
-        type: string
+        type: enum 
+        enum: ["run_and_wait", "async_init", "async_result"]
+        default: "run_and_wait"
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
@@ -90,12 +92,11 @@ commands:
             SOOS_BRANCH_URI: ""                 # ENTER BRANCH URI HERE IF KNOWN
             SOOS_BUILD_VERSION: ""              # ENTER BUILD VERSION HERE IF KNOWN
             SOOS_BUILD_URI: ${CIRCLE_BUILD_URL}
-            SOOS_OPERATING_ENVIRONMENT: ""      # ENTER OPERATING ENVIRONMENT HERE IF KNOWN (default will be provided)
             SOOS_INTEGRATION_NAME: '<<parameters.integration_name>>'
             SOOS_CLIENT_ID: '<<parameters.client_id>>'
             SOOS_API_KEY: '<<parameters.api_key>>'
           command: |
-            python soos/workspace/soos.py -m="${SOOS_MODE}" -of="${SOOS_ON_FAILURE}" -dte="${SOOS_DIRS_TO_EXCLUDE}" -fte="${SOOS_FILES_TO_EXCLUDE}" -wd="${SOOS_CHECKOUT_DIR}" -armw=${SOOS_ANALYSIS_RESULT_MAX_WAIT} -arpi=${SOOS_ANALYSIS_RESULT_POLLING_INTERVAL} -buri="${SOOS_API_BASE_URL}" -scp="${SOOS_CHECKOUT_DIR}" -pn="${SOOS_PROJECT_NAME}"
+            python soos/workspace/soos.py -m="${SOOS_MODE}" -of="${SOOS_ON_FAILURE}" -dte="${SOOS_DIRS_TO_EXCLUDE}" -fte="${SOOS_FILES_TO_EXCLUDE}" -wd="${SOOS_CHECKOUT_DIR}" -armw=${SOOS_ANALYSIS_RESULT_MAX_WAIT} -arpi=${SOOS_ANALYSIS_RESULT_POLLING_INTERVAL} -blduri="${SOOS_BUILD_URI}" -buri="${SOOS_API_BASE_URL}" -scp="${SOOS_CHECKOUT_DIR}" -pn="${SOOS_PROJECT_NAME}"
 # ***************************
 # ***************************
 executors:
@@ -122,7 +123,6 @@ executors:
           SOOS_BRANCH_URI: ""                 # ENTER BRANCH URI HERE IF KNOWN
           SOOS_BUILD_VERSION: ""              # ENTER BUILD VERSION HERE IF KNOWN
           SOOS_BUILD_URI: ${CIRCLE_BUILD_URL}
-          SOOS_OPERATING_ENVIRONMENT: ""      # ENTER OPERATING ENVIRONMENT HERE IF KNOWN (default will be provided)
           SOOS_INTEGRATION_NAME: '<<parameters.integration_name>>'
           SOOS_CLIENT_ID: '<<parameters.client_id>>'
           SOOS_API_KEY: '<<parameters.api_key>>'
@@ -130,8 +130,8 @@ executors:
       tag:
         default: 3.9.7
         description: >
-          Pick a specific circleci/node image variant:
-          https://hub.docker.com/r/cimg/node/tags
+          Pick a specific circleci/python image variant:
+          https://hub.docker.com/r/cimg/python/tags
         type: string
       project_name:
         default: "SOOS CircleCI Template"
@@ -146,15 +146,17 @@ executors:
       api_key:
         type: string
       mode:
-        default: "run_and_wait"
         description: >
           This parameter dictates type of analysis:
           - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
           - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
           - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
-        type: string
+        type: enum
+        enum: ["run_and_wait", "async_init", "async_result"]
+        default: "run_and_wait"
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
@@ -203,7 +205,6 @@ examples:
             - soos/analysis_async_result:
                 client_id: "<<SOOS Client Id>>"
                 api_key: "<<SOOS API Key>>"
-
                 requires:
                   - soos/analysis_async_init
 
@@ -267,7 +268,6 @@ examples:
             - packageaware/analysis_async_result:
                 client_id: "<<SOOS Client Id>>"
                 api_key: "<<SOOS API Key>>"
-
                 requires:
                   - soos/analysis_async_init
 
@@ -280,12 +280,7 @@ jobs:
   # ***************************
     description: >
       Run the SOOS security analysis in custom mode with full control.
-      Mode parameter will dictate type of analysis:
-        a) run_and_wait: The process will submit manifest files and wait for analysis result before exiting
-        b) async_init: The process will submit manifest files and exit. Requires a subsequent
-            call with mode "async_result" to get analysis result.
-        c) async_result: The process will search for analysis URL file written in async_init process
-            and execute call to URL until analysis results are available.
+      Mode parameter will dictate type of analysis
     # What will this job do?
     # Descriptions should be short, simple, and clear.
     parameters:
@@ -308,9 +303,11 @@ jobs:
            - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
            - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
            - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
-        type: string
+        type: enum
+        enum: ["run_and_wait", "async_init", "async_result"]
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
@@ -385,7 +382,8 @@ jobs:
       api_key:
         type: string
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
@@ -459,7 +457,8 @@ jobs:
       api_key:
         type: string
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
@@ -533,7 +532,8 @@ jobs:
       api_key:
         type: string
       on_failure:
-        type: string
+        type: enum
+        enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
         type: string
