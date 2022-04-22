@@ -146,11 +146,6 @@ executors:
         description: >
           The project name that will be displayed on the dashboard
         type: string
-      integration_name:
-        description: >
-          Integration name to bind this analysis to, internal use only.
-        default: "CircleCI"
-        type: string
       client_id:
         description: >
           SOOS Client Id. Get it from SOOS Application.
