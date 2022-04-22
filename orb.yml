@@ -19,11 +19,17 @@ commands:
           The project name that will be displayed on the dashboard
         type: string
       integration_name:
+        description: >
+          Integration name to bind this analysis to, internal use only.
         default: "CircleCI"
         type: string
       client_id:
+        description: >
+          SOOS Client Id. Get it from SOOS Application.
         type: string
       api_key:
+        description: >
+          SOOS API Key. Get it from SOOS Application
         type: string
       mode:
         description: >
@@ -39,24 +45,36 @@ commands:
         enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
+        description: >
+          List of directories (comma separated) that you want to exclude from the scan, eg: node_modules.
         type: string
         default: "soos"
       files_to_exclude:
+        description: >
+          List of files (comma separated) that you want to exclude from the scan, eg: package.json.
         type: string
         default: ""
       working_directory:
         type: string
         default: "/home/circleci/integration-test-circleci"
       analysis_result_max_wait:
+        description: >
+          Maximum seconds to wait for Analysis Result before exiting with error.
         type: integer
         default: 300
       analysis_result_polling_interval:
+        description: >
+          Polling interval (in seconds) for analysis result completion (success/failure.). Min 10.
         type: integer
         default: 10
       fs_debug:
+        description: >
+          Enables printing of debug statements from the Orb
         type: boolean
         default: false
       api_base_url:
+        description: >
+          URL of the api to be used, internal use only.
         type: string
         default: "https://api.soos.io/api/"
     steps: # steps that comprise the `build` job
@@ -87,16 +105,11 @@ commands:
             SOOS_API_BASE_URL: '<<parameters.api_base_url>>'
             # CI ENGINE SPECIFIC:
             SOOS_CHECKOUT_DIR: '<<parameters.working_directory>>'
-            SOOS_COMMIT_HASH: ${CIRCLE_SHA1}
-            SOOS_BRANCH_NAME: ${CIRCLE_BRANCH}
-            SOOS_BRANCH_URI: ""                 # ENTER BRANCH URI HERE IF KNOWN
-            SOOS_BUILD_VERSION: ""              # ENTER BUILD VERSION HERE IF KNOWN
-            SOOS_BUILD_URI: ${CIRCLE_BUILD_URL}
             SOOS_INTEGRATION_NAME: '<<parameters.integration_name>>'
             SOOS_CLIENT_ID: '<<parameters.client_id>>'
             SOOS_API_KEY: '<<parameters.api_key>>'
           command: |
-            python soos/workspace/soos.py -m="${SOOS_MODE}" -of="${SOOS_ON_FAILURE}" -dte="${SOOS_DIRS_TO_EXCLUDE}" -fte="${SOOS_FILES_TO_EXCLUDE}" -wd="${SOOS_CHECKOUT_DIR}" -armw=${SOOS_ANALYSIS_RESULT_MAX_WAIT} -arpi=${SOOS_ANALYSIS_RESULT_POLLING_INTERVAL} -blduri="${SOOS_BUILD_URI}" -buri="${SOOS_API_BASE_URL}" -scp="${SOOS_CHECKOUT_DIR}" -pn="${SOOS_PROJECT_NAME}"
+            python soos/workspace/soos.py -cid="${SOOS_CLIENT_ID}" -akey="${SOOS_API_KEY}" -m="${SOOS_MODE}" -of="${SOOS_ON_FAILURE}" -dte="${SOOS_DIRS_TO_EXCLUDE}" -fte="${SOOS_FILES_TO_EXCLUDE}" -wd="${SOOS_CHECKOUT_DIR}" -armw=${SOOS_ANALYSIS_RESULT_MAX_WAIT} -arpi=${SOOS_ANALYSIS_RESULT_POLLING_INTERVAL} -blduri=$CIRCLE_BUILD_URL -ch=$CIRCLE_SHA1 -bn=$CIRCLE_BRANCH -intn="${SOOS_INTEGRATION_NAME}" -buri="${SOOS_API_BASE_URL}" -scp="${SOOS_CHECKOUT_DIR}" -pn="${SOOS_PROJECT_NAME}"
 # ***************************
 # ***************************
 executors:
@@ -118,11 +131,6 @@ executors:
           SOOS_API_BASE_URL: '<<parameters.api_base_url>>'
           # CI ENGINE SPECIFIC:
           SOOS_CHECKOUT_DIR: '<<parameters.working_directory>>'
-          SOOS_COMMIT_HASH: ${CIRCLE_SHA1}
-          SOOS_BRANCH_NAME: ${CIRCLE_BRANCH}
-          SOOS_BRANCH_URI: ""                 # ENTER BRANCH URI HERE IF KNOWN
-          SOOS_BUILD_VERSION: ""              # ENTER BUILD VERSION HERE IF KNOWN
-          SOOS_BUILD_URI: ${CIRCLE_BUILD_URL}
           SOOS_INTEGRATION_NAME: '<<parameters.integration_name>>'
           SOOS_CLIENT_ID: '<<parameters.client_id>>'
           SOOS_API_KEY: '<<parameters.api_key>>'
@@ -139,11 +147,17 @@ executors:
           The project name that will be displayed on the dashboard
         type: string
       integration_name:
+        description: >
+          Integration name to bind this analysis to, internal use only.
         default: "CircleCI"
         type: string
       client_id:
+        description: >
+          SOOS Client Id. Get it from SOOS Application.
         type: string
       api_key:
+        description: >
+          SOOS API Key. Get it from SOOS Application
         type: string
       mode:
         description: >
@@ -159,24 +173,36 @@ executors:
         enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
+        description: >
+          List of directories (comma separated) that you want to exclude from the scan, eg: node_modules.
         type: string
         default: "soos"
       files_to_exclude:
+        description: >
+          List of files (comma separated) that you want to exclude from the scan, eg: package.json.
         type: string
         default: ""
       working_directory:
         type: string
         default: "/home/circleci/integration-test-circleci"
       analysis_result_max_wait:
+        description: >
+          Maximum seconds to wait for Analysis Result before exiting with error.
         type: integer
         default: 300
       analysis_result_polling_interval:
+        description: >
+          Polling interval (in seconds) for analysis result completion (success/failure.). Min 10.
         type: integer
         default: 10
       fs_debug:
+        description: >
+          Enables printing of debug statements from the Orb
         type: boolean
         default: false
       api_base_url:
+        description: >
+          URL of the api to be used, internal use only.
         type: string
         default: "https://api.soos.io/api/"
 # ***************************
@@ -187,7 +213,7 @@ examples:
       Run the SOOS security analysis in async_init mode.
       The process will first execute the async_init job.
       After async_init, the process will execute the async_result job to get results.
-      Functionally equivelant to the synchronous-analysis-with-blocking-result example
+      Functionally equivalent to the synchronous-analysis-with-blocking-result example
       and is for illustrative purposes only.
     usage:
       version: "2.1"
@@ -290,11 +316,17 @@ jobs:
           The project name that will be displayed on the dashboard
         type: string
       integration_name:
+        description: >
+          Integration name to bind this analysis to, internal use only.
         default: "CircleCI"
         type: string
       client_id:
+        description: >
+          SOOS Client Id. Get it from SOOS Application.
         type: string
       api_key:
+        description: >
+          SOOS API Key. Get it from SOOS Application
         type: string
       mode:
         default: "run_and_wait"
@@ -310,24 +342,36 @@ jobs:
         enum: ["fail_the_build", "continue_on_failure"]
         default: "fail_the_build"
       directories_to_exclude:
+        description: >
+          List of directories (comma separated) that you want to exclude from the scan, eg: node_modules.
         type: string
         default: "soos"
       files_to_exclude:
+        description: >
+          List of files (comma separated) that you want to exclude from the scan, eg: package.json.
         type: string
         default: ""
       working_directory:
         type: string
         default: "/home/circleci/integration-test-circleci"
       analysis_result_max_wait:
+        description: >
+          Maximum seconds to wait for Analysis Result before exiting with error.
         type: integer
         default: 300
       analysis_result_polling_interval:
+        description: >
+          Polling interval (in seconds) for analysis result completion (success/failure.). Min 10.
         type: integer
         default: 10
       fs_debug:
+        description: >
+          Enables printing of debug statements from the Orb
         type: boolean
         default: false
       api_base_url:
+        description: >
+          URL of the api to be used, internal use only.
         type: string
         default: "https://api.soos.io/api/"
     working_directory: ~/integration-test-circleci
