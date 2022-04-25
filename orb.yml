@@ -118,21 +118,6 @@ executors:
       This is the Python executor used to run the script.
     docker:
       - image: 'cimg/python:<<parameters.tag>>'
-        environment: # environment variables for primary container
-          SOOS_PROJECT_NAME: '<<parameters.project_name>>'
-          # ARGS WHERE CUSTOMIZATION IS OPTIONAL:
-          SOOS_MODE: '<<parameters.mode>>'
-          SOOS_ON_FAILURE: '<<parameters.on_failure>>'
-          SOOS_DIRS_TO_EXCLUDE: '<<parameters.directories_to_exclude>>'
-          SOOS_FILES_TO_EXCLUDE: '<<parameters.files_to_exclude>>'
-          SOOS_ANALYSIS_RESULT_MAX_WAIT: '<<parameters.analysis_result_max_wait>>'
-          SOOS_ANALYSIS_RESULT_POLLING_INTERVAL: '<<parameters.analysis_result_polling_interval>>'
-          # ARGS WHERE CUSTOMIZATION IS OPTIONAL, BUT UNLIKELY:
-          SOOS_API_BASE_URL: '<<parameters.api_base_url>>'
-          # CI ENGINE SPECIFIC:
-          SOOS_CHECKOUT_DIR: '<<parameters.working_directory>>'
-          SOOS_CLIENT_ID: '<<parameters.client_id>>'
-          SOOS_API_KEY: '<<parameters.api_key>>'
     parameters:
       tag:
         default: 3.9.7
@@ -140,65 +125,6 @@ executors:
           Pick a specific circleci/python image variant:
           https://hub.docker.com/r/cimg/python/tags
         type: string
-      project_name:
-        default: "SOOS CircleCI Template"
-        description: >
-          The project name that will be displayed on the dashboard
-        type: string
-      client_id:
-        description: >
-          SOOS Client Id. Get it from SOOS Application.
-        type: string
-      api_key:
-        description: >
-          SOOS API Key. Get it from SOOS Application
-        type: string
-      mode:
-        description: >
-          This parameter dictates type of analysis:
-          - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
-          - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
-          - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
-        type: enum
-        enum: ["run_and_wait", "async_init", "async_result"]
-        default: "run_and_wait"
-      on_failure:
-        type: enum
-        enum: ["fail_the_build", "continue_on_failure"]
-        default: "fail_the_build"
-      directories_to_exclude:
-        description: >
-          List of directories (comma separated) that you want to exclude from the scan, eg: node_modules.
-        type: string
-        default: "soos"
-      files_to_exclude:
-        description: >
-          List of files (comma separated) that you want to exclude from the scan, eg: package.json.
-        type: string
-        default: ""
-      working_directory:
-        type: string
-        default: "/home/circleci/integration-test-circleci"
-      analysis_result_max_wait:
-        description: >
-          Maximum seconds to wait for Analysis Result before exiting with error.
-        type: integer
-        default: 300
-      analysis_result_polling_interval:
-        description: >
-          Polling interval (in seconds) for analysis result completion (success/failure.). Min 10.
-        type: integer
-        default: 10
-      fs_debug:
-        description: >
-          Enables printing of debug statements from the Orb
-        type: boolean
-        default: false
-      api_base_url:
-        description: >
-          URL of the api to be used, internal use only.
-        type: string
-        default: "https://api.soos.io/api/"
 # ***************************
 # ***************************
 examples:
@@ -371,18 +297,6 @@ jobs:
     working_directory: ~/integration-test-circleci
     executor:
       name: python
-      project_name: '<<parameters.project_name>>'
-      client_id: '<<parameters.client_id>>'
-      api_key: '<<parameters.api_key>>'
-      mode: '<<parameters.mode>>'
-      on_failure: '<<parameters.on_failure>>'
-      directories_to_exclude: '<<parameters.directories_to_exclude>>'
-      files_to_exclude: '<<parameters.files_to_exclude>>'
-      working_directory: '<<parameters.working_directory>>'
-      analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
-      analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
-      fs_debug: '<<parameters.fs_debug>>'
-      api_base_url: '<<parameters.api_base_url>>'
     steps:
       - run-analysis:
           project_name: '<<parameters.project_name>>'
@@ -446,18 +360,6 @@ jobs:
     working_directory: ~/integration-test-circleci
     executor:
       name: python
-      project_name: '<<parameters.project_name>>'
-      client_id: '<<parameters.client_id>>'
-      api_key: '<<parameters.api_key>>'
-      mode: 'run_and_wait'
-      on_failure: '<<parameters.on_failure>>'
-      directories_to_exclude: '<<parameters.directories_to_exclude>>'
-      files_to_exclude: '<<parameters.files_to_exclude>>'
-      working_directory: '<<parameters.working_directory>>'
-      analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
-      analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
-      fs_debug: '<<parameters.fs_debug>>'
-      api_base_url: '<<parameters.api_base_url>>'
     steps:
       - run-analysis:
           project_name: '<<parameters.project_name>>'
@@ -520,18 +422,6 @@ jobs:
     working_directory: ~/integration-test-circleci
     executor:
       name: python
-      project_name: '<<parameters.project_name>>'
-      client_id: '<<parameters.client_id>>'
-      api_key: '<<parameters.api_key>>'
-      mode: 'async_init'
-      on_failure: '<<parameters.on_failure>>'
-      directories_to_exclude: '<<parameters.directories_to_exclude>>'
-      files_to_exclude: '<<parameters.files_to_exclude>>'
-      working_directory: '<<parameters.working_directory>>'
-      analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
-      analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
-      fs_debug: '<<parameters.fs_debug>>'
-      api_base_url: '<<parameters.api_base_url>>'
     steps:
       - run-analysis:
           project_name: '<<parameters.project_name>>'
@@ -594,18 +484,6 @@ jobs:
     working_directory: ~/integration-test-circleci
     executor:
       name: python
-      project_name: '<<parameters.project_name>>'
-      client_id: '<<parameters.client_id>>'
-      api_key: '<<parameters.api_key>>'
-      mode: 'async_result'
-      on_failure: '<<parameters.on_failure>>'
-      directories_to_exclude: '<<parameters.directories_to_exclude>>'
-      files_to_exclude: '<<parameters.files_to_exclude>>'
-      working_directory: '<<parameters.working_directory>>'
-      analysis_result_max_wait: '<<parameters.analysis_result_max_wait>>'
-      analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
-      fs_debug: '<<parameters.fs_debug>>'
-      api_base_url: '<<parameters.api_base_url>>'
     steps:
       - run-analysis:
           project_name: '<<parameters.project_name>>'
