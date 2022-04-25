@@ -93,16 +93,19 @@ commands:
       - run:
           name: 'Run Analysis'
           command: |
-            python soos/workspace/soos.py -cid="<<parameters.client_id>>" \ 
+             python soos/workspace/soos.py \
+              -cid="<<parameters.client_id>>" \
               -akey="<<parameters.api_key>>" \
               -m="<<parameters.mode>>" \
               -of="<<parameters.on_failure>>" \
               -dte="<<parameters.directories_to_exclude>>" \
               -fte="<<parameters.files_to_exclude>>" \
               -wd="<<parameters.working_directory>>" \
-              -armw="<<parameters.analysis_result_max_wait>>" \
-              -arpi="<<parameters.analysis_result_polling_interval>>" \
-              -blduri=$CIRCLE_BUILD_URL -ch=$CIRCLE_SHA1 -bn=$CIRCLE_BRANCH \
+              -armw=<<parameters.analysis_result_max_wait>> \
+              -arpi=<<parameters.analysis_result_polling_interval>> \
+              -blduri=$CIRCLE_BUILD_URL \
+              -ch=$CIRCLE_SHA1 \
+              -bn=$CIRCLE_BRANCH \
               -intn="<<parameters.integration_name>>" \
               -buri="<<parameters.api_base_url>>" \
               -scp="<<parameters.working_directory>>" \
