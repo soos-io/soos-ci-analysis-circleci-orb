@@ -373,7 +373,6 @@ jobs:
     executor:
       name: python
       project_name: '<<parameters.project_name>>'
-      integration_name: '<<parameters.integration_name>>'
       client_id: '<<parameters.client_id>>'
       api_key: '<<parameters.api_key>>'
       mode: '<<parameters.mode>>'
@@ -449,7 +448,6 @@ jobs:
     executor:
       name: python
       project_name: '<<parameters.project_name>>'
-      integration_name: '<<parameters.integration_name>>'
       client_id: '<<parameters.client_id>>'
       api_key: '<<parameters.api_key>>'
       mode: 'run_and_wait'
@@ -524,7 +522,6 @@ jobs:
     executor:
       name: python
       project_name: '<<parameters.project_name>>'
-      integration_name: '<<parameters.integration_name>>'
       client_id: '<<parameters.client_id>>'
       api_key: '<<parameters.api_key>>'
       mode: 'async_init'
@@ -599,7 +596,6 @@ jobs:
     executor:
       name: python
       project_name: '<<parameters.project_name>>'
-      integration_name: '<<parameters.integration_name>>'
       client_id: '<<parameters.client_id>>'
       api_key: '<<parameters.api_key>>'
       mode: 'async_result'
