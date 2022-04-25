@@ -131,7 +131,6 @@ executors:
           SOOS_API_BASE_URL: '<<parameters.api_base_url>>'
           # CI ENGINE SPECIFIC:
           SOOS_CHECKOUT_DIR: '<<parameters.working_directory>>'
-          SOOS_INTEGRATION_NAME: '<<parameters.integration_name>>'
           SOOS_CLIENT_ID: '<<parameters.client_id>>'
           SOOS_API_KEY: '<<parameters.api_key>>'
     parameters:
