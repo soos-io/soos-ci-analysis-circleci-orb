@@ -18,11 +18,6 @@ commands:
         description: >
           The project name that will be displayed on the dashboard
         type: string
-      integration_name:
-        description: >
-          Integration name to bind this analysis to, internal use only.
-        default: "CircleCI"
-        type: string
       client_id:
         description: >
           SOOS Client Id. Get it from SOOS Application.
@@ -86,16 +81,13 @@ commands:
           command: mkdir -p soos/workspace
       - run: |
           cd soos/workspace
-          curl -s https://api.github.com/repos/soos-io/soos-ci-analysis-python/releases/latest | grep "browser_download_url" | cut -d '"' -f 4 | xargs -n 1 curl -LO
       - run:
-          command: |
-            pipenv install -r soos/workspace/requirements.txt
-            pip install requests
-          name: Install Python deps in a venv
+          name: Install soos-sca
+          command: pip install soos-sca --trusted-host pypi.python.org
       - run:
           name: 'Run Analysis'
           command: |
-             python soos/workspace/soos.py \
+             soos-sca \
               -cid="<<parameters.client_id>>" \
               -akey="<<parameters.api_key>>" \
               -m="<<parameters.mode>>" \
@@ -108,7 +100,8 @@ commands:
               -blduri=$CIRCLE_BUILD_URL \
               -ch=$CIRCLE_SHA1 \
               -bn=$CIRCLE_BRANCH \
-              -intn="<<parameters.integration_name>>" \
+              -intn="CircleCI" \
+              -intt="Plugin" \
               -buri="<<parameters.api_base_url>>" \
               -scp="<<parameters.working_directory>>" \
               -pn="<<parameters.project_name>>"
@@ -237,11 +230,6 @@ jobs:
         description: >
           The project name that will be displayed on the dashboard
         type: string
-      integration_name:
-        description: >
-          Integration name to bind this analysis to, internal use only.
-        default: "CircleCI"
-        type: string
       client_id:
         description: >
           SOOS Client Id. Get it from SOOS Application.
@@ -302,7 +290,6 @@ jobs:
     steps:
       - run-analysis:
           project_name: '<<parameters.project_name>>'
-          integration_name: '<<parameters.integration_name>>'
           client_id: '<<parameters.client_id>>'
           api_key: '<<parameters.api_key>>'
           mode: '<<parameters.mode>>'
@@ -327,11 +314,6 @@ jobs:
         description: >
           The project name that will be displayed on the dashboard
         type: string
-      integration_name:
-        description: >
-          Integration name to bind this analysis to, internal use only.
-        default: "CircleCI"
-        type: string
       client_id:
         description: >
           SOOS Client Id. Get it from SOOS Application.
@@ -385,7 +367,6 @@ jobs:
     steps:
       - run-analysis:
           project_name: '<<parameters.project_name>>'
-          integration_name: '<<parameters.integration_name>>'
           client_id: '<<parameters.client_id>>'
           api_key: '<<parameters.api_key>>'
           mode: 'run_and_wait'
@@ -409,11 +390,6 @@ jobs:
         description: >
           The project name that will be displayed on the dashboard
         type: string
-      integration_name:
-        description: >
-          Integration name to bind this analysis to, internal use only.
-        default: "CircleCI"
-        type: string
       client_id:
         description: >
           SOOS Client Id. Get it from SOOS Application.
@@ -467,7 +443,6 @@ jobs:
     steps:
       - run-analysis:
           project_name: '<<parameters.project_name>>'
-          integration_name: '<<parameters.integration_name>>'
           client_id: '<<parameters.client_id>>'
           api_key: '<<parameters.api_key>>'
           mode: 'async_init'
@@ -491,11 +466,6 @@ jobs:
         description: >
           The project name that will be displayed on the dashboard
         type: string
-      integration_name:
-        description: >
-          Integration name to bind this analysis to, internal use only.
-        default: "CircleCI"
-        type: string
       client_id:
         description: >
           SOOS Client Id. Get it from SOOS Application.
@@ -549,7 +519,6 @@ jobs:
     steps:
       - run-analysis:
           project_name: '<<parameters.project_name>>'
-          integration_name: '<<parameters.integration_name>>'
           client_id: '<<parameters.client_id>>'
           api_key: '<<parameters.api_key>>'
           mode: 'async_result'
