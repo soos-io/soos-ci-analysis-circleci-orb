@@ -12,7 +12,7 @@ orbs:
   soos: soos-io/sca@x.y.z
 
 #
-# The Workflow is the example of how a user would integrate with the SOOS ORB
+# The Workflow is the example of how a user would integrate with the SOOS Orb
 #
 workflows:
   main:
