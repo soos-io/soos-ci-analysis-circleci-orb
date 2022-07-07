@@ -1,0 +1,7 @@
+version: 2.1
+
+description: >
+  SOOS SCA Orb helps you scan your web manifests dependencies to find and fix vulnerabilities.
+display:
+  home_url: "https://soos.io/"
+  source_url: "https://github.com/soos-io/soos-ci-analysis-circleci-orb"
