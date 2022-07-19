@@ -1,0 +1,44 @@
+version: 2.1
+orbs:
+  sca: soos-io/sca@dev:<<pipeline.git.revision>>
+  orb-tools: circleci/orb-tools@11.1
+
+filters: &filters
+  tags:
+    only: /.*/
+
+jobs:
+  # Create a job to test the commands of your orbs.
+  # You may want to add additional validation steps to ensure the commands are working as expected.
+  command-tests:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - checkout
+      - run: curl -LJO https://raw.githubusercontent.com/SOOS-JAlvarez/sca-teamcity-server/main/package.json
+      # Run your orb's commands to validate them.
+      - sca/run-sca-analysis:
+          project_name: "test-circleci"
+          api_base_url: "https://qa-api.soos.io/api/"
+workflows:
+  test-deploy:
+    jobs:
+      # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
+      - command-tests:
+          filters: *filters
+          context: env-variables
+      - orb-tools/pack:
+          filters: *filters
+      - orb-tools/publish:
+          orb-name: soos-io/sca
+          vcs-type: << pipeline.project.type >>
+          pub-type: production
+          requires:
+            - orb-tools/pack
+            - command-tests
+          context: orb-publishing
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
