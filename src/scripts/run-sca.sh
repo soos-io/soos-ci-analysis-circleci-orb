@@ -3,8 +3,8 @@ SOOS_INTEGRATION_NAME="CircleCI"
 SOOS_INTEGRATION_TYPE="Plugin"
 CIRCLE_WORKING_DIRECTORY="${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}"
 
-soos-sca  -cid=$SOOS_CLIENT_ID_VAR_NAME \
-          -akey=$SOOS_API_KEY_VAR_NAME \
+soos-sca  -cid=${!SOOS_CLIENT_ID_VAR_NAME} \
+          -akey=${!SOOS_API_KEY_VAR_NAME} \
           -m=$SOOS_SCAN_MODE \
           -of=$SOOS_ON_FAILURE \
           -dte=$SOOS_DIRS_TO_EXCLUDE \
