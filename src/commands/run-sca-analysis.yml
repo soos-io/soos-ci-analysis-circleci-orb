@@ -58,6 +58,11 @@ parameters:
       URL of the api to be used, internal use only.
     type: string
     default: "https://api.soos.io/api/"
+  package_managers:
+    description: >
+      List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)
+    type: string
+    default: ""
 steps:
   - checkout # check out source code to working directory
   - run:
@@ -76,4 +81,5 @@ steps:
         SOOS_ANALYSIS_MAX_AWAIT: '<<parameters.analysis_result_max_wait>>'
         SOOS_POLLING_INTERVAL: '<<parameters.analysis_result_polling_interval>>'
         SOOS_API_URL: '<<parameters.api_base_url>>'
+        SOOS_PACKAGE_MANAGERS: '<<parameters.package_managers>>'
       command: <<include(scripts/run-sca.sh)>>

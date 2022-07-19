@@ -62,6 +62,11 @@ parameters:
       URL of the api to be used, internal use only.
     type: string
     default: "https://api.soos.io/api/"
+  package_managers:
+    description: >
+      List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)
+    type: string
+    default: ""
 steps:
   - run-sca-analysis:
       project_name: '<<parameters.project_name>>'
@@ -75,3 +80,4 @@ steps:
       analysis_result_polling_interval: '<<parameters.analysis_result_polling_interval>>'
       fs_debug: '<<parameters.fs_debug>>'
       api_base_url: '<<parameters.api_base_url>>'
+      package_managers: '<<parameters.package_managers>>'

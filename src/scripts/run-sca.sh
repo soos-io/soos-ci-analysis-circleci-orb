@@ -19,4 +19,5 @@ soos-sca  -cid=$SOOS_CLIENT_ID \
           -intt=$SOOS_INTEGRATION_TYPE \
           -buri=$SOOS_API_URL \
           -scp=$CIRCLE_WORKING_DIRECTORY \
-          -pn=$SOOS_PROJECT_NAME
+          -pn=$SOOS_PROJECT_NAME \
+          -pm=$SOOS_PACKAGE_MANAGERS
