@@ -67,6 +67,14 @@ parameters:
       List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)
     type: string
     default: ""
+  verbosity:
+    description: Set logging verbosity level value (INFO/DEBUG)
+    type: string
+    default: "INFO"
+  verbose:
+    description: Enable verbose logging
+    type: boolean
+    default: false
 steps:
   - run-sca-analysis:
       project_name: '<<parameters.project_name>>'
@@ -81,3 +89,5 @@ steps:
       fs_debug: '<<parameters.fs_debug>>'
       api_base_url: '<<parameters.api_base_url>>'
       package_managers: '<<parameters.package_managers>>'
+      verbosity: '<<parameters.verbosity>>'
+      verbose: '<<parameters.verbose>>'

@@ -44,6 +44,9 @@ The SOOS Action has properties which are passed to the action using `with`.
 | analysis_result_polling_interval | 10 | Polling interval (in seconds) for analysis result completion (success/failure.). Min 10. |
 | fs_debug | false | Enables printing of debug statements from the Orb |
 | package_managers | ""  | List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)|
+| verbosity | "
+INFO"  | Set logging verbosity level value (INFO/DEBUG)|
+| verbose | false  | Enable verbose logging|
 
 The SOOS Action has environment variables which are passed to the action using `env`. These environment variables are stored as project `environment variables` and are required for the action to operate.
 
