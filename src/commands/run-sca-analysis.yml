@@ -63,6 +63,14 @@ parameters:
       List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)
     type: string
     default: ""
+  verbosity:
+    description: Set logging verbosity level value (INFO/DEBUG)
+    type: string
+    default: "INFO"
+  verbose:
+    description: Enable verbose logging
+    type: boolean
+    default: false
 steps:
   - checkout # check out source code to working directory
   - run:
@@ -82,4 +90,6 @@ steps:
         SOOS_POLLING_INTERVAL: '<<parameters.analysis_result_polling_interval>>'
         SOOS_API_URL: '<<parameters.api_base_url>>'
         SOOS_PACKAGE_MANAGERS: '<<parameters.package_managers>>'
+        SOOS_VERBOSITY: '<<parameters.verbosity>>'
+        SOOS_VERBOSE: '<<parameters.verbose>>'
       command: <<include(scripts/run-sca.sh)>>

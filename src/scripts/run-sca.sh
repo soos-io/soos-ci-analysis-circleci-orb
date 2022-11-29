@@ -3,6 +3,12 @@ SOOS_INTEGRATION_NAME="CircleCI"
 SOOS_INTEGRATION_TYPE="Plugin"
 CIRCLE_WORKING_DIRECTORY="${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}"
 
+PARAMS=""
+
+if [  "$SOOS_VERBOSE" -eq 1 ]; then
+    PARAMS+=" --verbose"
+fi
+
 soos-sca  -cid=${!SOOS_CLIENT_ID_VAR_NAME} \
           -akey=${!SOOS_API_KEY_VAR_NAME} \
           -m=$SOOS_SCAN_MODE \
@@ -20,4 +26,5 @@ soos-sca  -cid=${!SOOS_CLIENT_ID_VAR_NAME} \
           -buri=$SOOS_API_URL \
           -scp=$CIRCLE_WORKING_DIRECTORY \
           -pn=$SOOS_PROJECT_NAME \
-          -pm=$SOOS_PACKAGE_MANAGERS
+          -pm=$SOOS_PACKAGE_MANAGERS \
+          -v=$SOOS_VERBOSITY ${PARAMS}
