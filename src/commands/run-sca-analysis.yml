@@ -68,9 +68,8 @@ parameters:
     type: string
     default: "INFO"
   verbose:
-    description: Enable verbose logging
+    description: Enable verbose logging. (set as true to enable / don't add this parameter to disable)
     type: boolean
-    default: false
 steps:
   - checkout # check out source code to working directory
   - run:
