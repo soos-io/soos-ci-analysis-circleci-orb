@@ -5,8 +5,8 @@ CIRCLE_WORKING_DIRECTORY="${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}"
 
 PARAMS=""
 
-if [  "$SOOS_VERBOSE" -eq 1 ]; then
-    PARAMS+=" --verbose"
+if [ "$SOOS_VERBOSE" = true ]; then
+    PARAMS="$PARAMS --verbose"
 fi
 
 soos-sca  -cid=${!SOOS_CLIENT_ID_VAR_NAME} \
