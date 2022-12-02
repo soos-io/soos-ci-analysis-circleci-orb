@@ -5,10 +5,11 @@ CIRCLE_WORKING_DIRECTORY="${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}"
 
 PARAMS=""
 
-if [ "$SOOS_VERBOSE" = "true" ]; then
+if [ "$SOOS_VERBOSE" -eq 1 ]; then
   PARAMS="$PARAMS --verbose"
 fi
 
+set -x
 soos-sca  -cid=${!SOOS_CLIENT_ID_VAR_NAME} \
           -akey=${!SOOS_API_KEY_VAR_NAME} \
           -m=$SOOS_SCAN_MODE \
