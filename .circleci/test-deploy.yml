@@ -21,7 +21,7 @@ jobs:
       - sca/run-sca-analysis:
           project_name: "test-circleci"
           api_base_url: "https://qa-api.soos.io/api/"
-          verbose: true
+          verbose: false
 workflows:
   test-deploy:
     jobs:
