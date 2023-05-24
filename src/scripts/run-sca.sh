@@ -9,6 +9,11 @@ if [  "$SOOS_VERBOSE" -eq 1 ]; then
     PARAMS+=" --verbose"
 fi
 
+
+if [ -z "$SOOS_PROJECT_NAME" ] || [ "$SOOS_PROJECT_NAME" == "SOOS CircleCI Template" ]; then
+    $SOOS_PROJECT_NAME=${!CIRCLE_PROJECT_REPONAME}
+fi
+
 soos-sca  -cid=${!SOOS_CLIENT_ID_VAR_NAME} \
           -akey=${!SOOS_API_KEY_VAR_NAME} \
           -m=$SOOS_SCAN_MODE \
