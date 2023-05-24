@@ -9,7 +9,7 @@ parameters:
   project_name:
     default: "SOOS CircleCI Template"
     description: >
-      The project name that will be displayed on the dashboard
+      The project name that will be displayed on the dashboard. If the value is empty or not indicated it will default to the repository name.
     type: string
   client_id:
     description: SOOS Client Id
