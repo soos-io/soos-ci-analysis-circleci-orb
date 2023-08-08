@@ -32,4 +32,5 @@ soos-sca  -cid=${!SOOS_CLIENT_ID_VAR_NAME} \
           -scp=$CIRCLE_WORKING_DIRECTORY \
           -pn="$SOOS_PROJECT_NAME" \
           -pm=$SOOS_PACKAGE_MANAGERS \
-          -v=$SOOS_VERBOSITY ${PARAMS}
+          -v=$SOOS_VERBOSITY ${PARAMS} \
+          -cdev=$CIRCLE_USERNAME
