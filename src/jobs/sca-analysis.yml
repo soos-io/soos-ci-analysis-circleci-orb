@@ -22,7 +22,7 @@ parameters:
     type: enum
     enum: ["fail_the_build", "continue_on_failure"]
     default: "continue_on_failure"
-  output_format: 
+  output_format:
     description: >
       Output format for vulnerabilities: only the value SARIF is available at the moment
     type: enum
