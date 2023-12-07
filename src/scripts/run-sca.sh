@@ -10,10 +10,10 @@ fi
 
 PARAMS=(
     "--apiKey" "${!SOOS_API_KEY_VAR_NAME}"
-    "--apiURL" "${!SOOS_CLIENT_ID_VAR_NAME}"
+    "--apiURL" "${SOOS_API_URL}"
     "--branchName" "${CIRCLE_BRANCH}"
     ${CIRCLE_BUILD_URL:+--buildURI "'${CIRCLE_BUILD_URL}'"}
-    "--clientId" "${SOOS_CLIENT_ID_VAR_NAME}"
+    "--clientId" "${!SOOS_CLIENT_ID_VAR_NAME}"
     "--commitHash" "${CIRCLE_SHA1}"
     "--directoriesToExclude" "${SOOS_DIRS_TO_EXCLUDE}"
     "--filesToExclude" "${SOOS_FILES_TO_EXCLUDE}"
@@ -33,5 +33,4 @@ if [  "$SOOS_VERBOSE" -eq 1 ]; then
 fi
 
 
-set -x
 node ./soos/node_modules/@soos-io/soos-sca/bin/index.js "${PARAMS[@]}"
