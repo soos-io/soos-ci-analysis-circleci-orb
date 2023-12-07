@@ -47,15 +47,14 @@ The SOOS Action has properties which are passed to the action using `with`.
 | --- | --- | --- |
 | client_id | ""  | `Required` - SOOS Client Id. Get it from SOOS Application.
 | api_key | ""  | `Required` - SOOS API Key. Get it from SOOS Application
-| on_failure | "fail_the_build"  | Flag indicating whether or not to return an error code if errors are found in the SOOS script or SOOS analysis.
-| directories_to_exclude | ""  | List (comma separated) of directories (relative to ./) to exclude from the search for manifest files. Example - Correct: bin/start/ ... Example - Incorrect: ./bin/start/ ... Example - Incorrect: /bin/start/'|
-| files_to_exclude | "" | List (comma separated) of files (relative to ./) to exclude from the search for manifest files. Example - Correct: bin/start/manifest.txt ... Example - Incorrect: ./bin/start/manifest.txt ... Example - Incorrect: /bin/start/manifest.txt' |
-| analysis_result_max_wait | 300 | Maximum seconds to wait for Analysis Result before exiting with error. |
-| analysis_result_polling_interval | 10 | Polling interval (in seconds) for analysis result completion (success/failure.). Min 10. |
+| on_failure | "continue_on_failure"  | Flag indicating whether or not to return an error code if errors are found in the SOOS script or SOOS analysis. |
+| output_format   | ""        | Output format for vulnerabilities: only the value SARIF is available at the moment |  
+| directories_to_exclude | ""  | Listing of directories or patterns to exclude from the search for manifest files. eg: **bin/start/**, **/start/** |
+| files_to_exclude | "" | Listing of files or patterns patterns to exclude from the search for manifest files. eg: **/req**.txt/, **/requirements.txt |
 | fs_debug | false | Enables printing of debug statements from the Orb |
 | package_managers | ""  | List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)|
-| verbosity | "
-INFO"  | Set logging verbosity level value (INFO/DEBUG)|
+| log_level | "
+INFO"  | Log level to show: PASS, IGNORE, INFO, WARN, FAIL, DEBUG, ERROR.|
 | verbose | false  | Enable verbose logging|
 
 The SOOS Action has environment variables which are passed to the action using `env`. These environment variables are stored as project `environment variables` and are required for the action to operate.
