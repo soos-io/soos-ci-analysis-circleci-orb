@@ -14,7 +14,7 @@ if [ -z "$SOOS_PROJECT_NAME" ] || [ "$SOOS_PROJECT_NAME" == "SOOS CircleCI Templ
     SOOS_PROJECT_NAME=$CIRCLE_PROJECT_REPONAME
 fi
 
-soos-sca  --clientId=${!SOOS_CLIENT_ID_VAR_NAME} \
+node ./soos/node_modules/@soos-io/soos-sca/bin/index.js --clientId=${!SOOS_CLIENT_ID_VAR_NAME} \
           --apiKey=${!SOOS_API_KEY_VAR_NAME} \
           --onFailure=$SOOS_ON_FAILURE \
           --directoriesToExclude=$SOOS_DIRS_TO_EXCLUDE \
