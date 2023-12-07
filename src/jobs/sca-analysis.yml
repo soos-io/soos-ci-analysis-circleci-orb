@@ -25,13 +25,13 @@ parameters:
   output_format:
     description: >
       Output format for vulnerabilities: only the value SARIF is available at the moment
-    type: enum
-    enum: ["SARIF"]
+    type: string
+    default: ""
   directories_to_exclude:
     description: >
       List of directories (comma separated) that you want to exclude from the scan, eg: node_modules.
     type: string
-    default: "soos"
+    default: ""
   files_to_exclude:
     description: >
       List of files (comma separated) that you want to exclude from the scan, eg: package.json.
