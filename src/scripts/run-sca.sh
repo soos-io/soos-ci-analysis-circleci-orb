@@ -12,7 +12,7 @@ PARAMS=(
     "--apiKey" "${!SOOS_API_KEY_VAR_NAME}"
     "--apiURL" "${!SOOS_CLIENT_ID_VAR_NAME}"
     "--branchName" "${CIRCLE_BRANCH}"
-    ${CIRCLE_BUILD_URL:+--buildUri "'${CIRCLE_BUILD_URL}'"}
+    ${CIRCLE_BUILD_URL:+--buildURI "'${CIRCLE_BUILD_URL}'"}
     "--clientId" "${SOOS_CLIENT_ID_VAR_NAME}"
     "--commitHash" "${CIRCLE_SHA1}"
     "--directoriesToExclude" "${SOOS_DIRS_TO_EXCLUDE}"
