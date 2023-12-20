@@ -29,7 +29,7 @@ PARAMS=(
 )
 
 if [  "$SOOS_VERBOSE" -eq 1 ]; then
-    PARAMS+=(" --verbose")
+    PARAMS+=("--verbose")
 fi
 
 
