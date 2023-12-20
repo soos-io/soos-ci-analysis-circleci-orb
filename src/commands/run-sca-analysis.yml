@@ -34,11 +34,6 @@ parameters:
       List of files (comma separated) that you want to exclude from the scan, eg: package.json.
     type: string
     default: ""
-  fs_debug:
-    description: >
-      Enables printing of debug statements from the Orb
-    type: boolean
-    default: false
   api_base_url:
     description: >
       URL of the api to be used, internal use only.
@@ -51,7 +46,7 @@ parameters:
     default: ""
   log_level:
     description: >
-      Log level to show: PASS, IGNORE, INFO, WARN, FAIL, DEBUG, ERROR.
+      Log level to show: INFO, WARN, FAIL, DEBUG, ERROR.
     type: string
     default: "INFO"
   verbose:
