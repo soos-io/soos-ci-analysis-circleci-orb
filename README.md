@@ -47,6 +47,8 @@ The SOOS Action has properties which are passed to the action using `with`.
 | --- | --- | --- |
 | client_id |  | SOOS Client ID - get yours from [SOOS Integration](https://app.soos.io/integrate/sca). Uses `SOOS_API_CLIENT` env value if present.  
 | api_key |  | SOOS API Key - get yours from [SOOS Integration](https://app.soos.io/integrate/sca). Uses `SOOS_API_KEY` env value if present.
+| branch_name              | `CIRCLE_BRANCH` | Branch Name to create scan under |
+| build_version           | |Version of application build artifacts. |
 | on_failure | `continue_on_failure`  | Flag indicating whether or not to return an error code if errors are found in the SOOS script or SOOS analysis. |
 | output_format   |        | Output format for vulnerabilities: only the value SARIF is available at the moment |  
 | directories_to_exclude |  | Listing of directories or patterns to exclude from the search for manifest files. eg: **bin/start/**, **/start/** |

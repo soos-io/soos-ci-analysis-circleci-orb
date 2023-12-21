@@ -13,6 +13,10 @@ parameters:
     description: SOOS API Key
     type: env_var_name
     default: SOOS_API_KEY
+  branch_name:
+    description: 'Branch Name to create scan under'
+  build_version:
+    description: 'Version of application build artifacts.'
   on_failure:
     description: >
       Flag indicating whether or not to return an error code if errors are found in the SOOS script or SOOS analysis.
@@ -63,6 +67,8 @@ steps:
       environment:
         SOOS_CLIENT_ID_VAR_NAME: '<<parameters.client_id>>'
         SOOS_API_KEY_VAR_NAME: '<<parameters.api_key>>'
+        SOOS_BRANCH_NAME: '<<parameters.branch_name>>'
+        SOOS_BUILD_VERSION: '<<parameters.build_version>>'
         SOOS_PROJECT_NAME: '<<parameters.project_name>>'
         SOOS_ON_FAILURE: '<<parameters.on_failure>>'
         SOOS_OUTPUT_FORMAT: '<<parameters.output_format>>'

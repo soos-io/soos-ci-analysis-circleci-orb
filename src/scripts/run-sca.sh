@@ -7,12 +7,15 @@ if [ -z "$SOOS_PROJECT_NAME" ] || [ "$SOOS_PROJECT_NAME" == "SOOS CircleCI Templ
     SOOS_PROJECT_NAME=$CIRCLE_PROJECT_REPONAME
 fi
 
+SOOS_BRANCH_NAME=${SOOS_BRANCH_NAME:-${CIRCLE_BRANCH}}
+
 
 PARAMS=(
     "--apiKey" "${!SOOS_API_KEY_VAR_NAME}"
     "--apiURL" "${SOOS_API_URL}"
-    "--branchName" "${CIRCLE_BRANCH}"
+    "--branchName" "${SOOS_BRANCH_NAME}"
     ${CIRCLE_BUILD_URL:+--buildURI "'${CIRCLE_BUILD_URL}'"}
+    ${SOOS_BUILD_VERSION:+--buildVersion ${SOOS_BUILD_VERSION}}
     "--clientId" "${!SOOS_CLIENT_ID_VAR_NAME}"
     "--commitHash" "${CIRCLE_SHA1}"
     "--directoriesToExclude" "${SOOS_DIRS_TO_EXCLUDE}"

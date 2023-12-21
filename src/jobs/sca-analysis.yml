@@ -18,6 +18,10 @@ parameters:
     description: SOOS API Key
     type: env_var_name
     default: SOOS_API_KEY
+  branch_name:
+    description: 'Branch Name to create scan under'
+  build_version:
+    description: 'Version of application build artifacts.'
   on_failure:
     type: enum
     enum: ["fail_the_build", "continue_on_failure"]
@@ -61,6 +65,8 @@ steps:
       project_name: '<<parameters.project_name>>'
       client_id: '<<parameters.client_id>>'
       api_key: '<<parameters.api_key>>'
+      branch_name: '<<parameters.branch_name>>'
+      build_version: '<<parameters.build_version>>'
       on_failure: '<<parameters.on_failure>>'
       output_format: '<<parameters.output_format>>'
       directories_to_exclude: '<<parameters.directories_to_exclude>>'
