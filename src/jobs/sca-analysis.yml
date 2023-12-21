@@ -21,9 +21,11 @@ parameters:
   branch_name:
     description: 'Branch Name to create scan under'
     type: string
+    required: false
   build_version:
     description: 'Version of application build artifacts.'
     type: string
+    required: false
   on_failure:
     type: enum
     enum: ["fail_the_build", "continue_on_failure"]
