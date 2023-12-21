@@ -20,8 +20,10 @@ parameters:
     default: SOOS_API_KEY
   branch_name:
     description: 'Branch Name to create scan under'
+    type: string
   build_version:
     description: 'Version of application build artifacts.'
+    type: string
   on_failure:
     type: enum
     enum: ["fail_the_build", "continue_on_failure"]
