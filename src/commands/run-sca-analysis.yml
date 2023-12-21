@@ -16,9 +16,11 @@ parameters:
   branch_name:
     description: 'Branch Name to create scan under'
     type: string
+    required: false
   build_version:
     description: 'Version of application build artifacts.'
     type: string
+    required: false
   on_failure:
     description: >
       Flag indicating whether or not to return an error code if errors are found in the SOOS script or SOOS analysis.
