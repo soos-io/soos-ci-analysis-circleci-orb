@@ -13,46 +13,35 @@ parameters:
     description: SOOS API Key
     type: env_var_name
     default: SOOS_API_KEY
-  mode:
-    description: >
-      This parameter dictates type of analysis:
-      - run_and_wait: The process will submit manifest files and wait for analysis result before exiting. (Default)
-      - async_init: The process will submit manifest files and exit. Requires a subsequent call with mode "async_result" to get analysis result.
-      - async_result: The process will search for analysis URL file written in async_init process and execute call to URL until analysis results are available.
-    type: enum
-    enum: ["run_and_wait", "async_init", "async_result"]
-    default: "run_and_wait"
+  branch_name:
+    description: 'Branch Name to create scan under'
+    type: string
+    default: ""
+  build_version:
+    description: 'Version of application build artifacts.'
+    type: string
+    default: ""
   on_failure:
     description: >
       Flag indicating whether or not to return an error code if errors are found in the SOOS script or SOOS analysis.
     type: enum
     enum: ["fail_the_build", "continue_on_failure"]
-    default: "fail_the_build"
+    default: "continue_on_failure"
+  output_format:
+    description: >
+      Output format for vulnerabilities: only the value SARIF is available at the moment
+    type: string
+    default: ""
   directories_to_exclude:
     description: >
       List of directories (comma separated) that you want to exclude from the scan, eg: node_modules.
     type: string
-    default: "soos"
+    default: ""
   files_to_exclude:
     description: >
       List of files (comma separated) that you want to exclude from the scan, eg: package.json.
     type: string
     default: ""
-  analysis_result_max_wait:
-    description: >
-      Maximum seconds to wait for Analysis Result before exiting with error.
-    type: integer
-    default: 300
-  analysis_result_polling_interval:
-    description: >
-      Polling interval (in seconds) for analysis result completion (success/failure.). Min 10.
-    type: integer
-    default: 10
-  fs_debug:
-    description: >
-      Enables printing of debug statements from the Orb
-    type: boolean
-    default: false
   api_base_url:
     description: >
       URL of the api to be used, internal use only.
@@ -63,8 +52,9 @@ parameters:
       List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)
     type: string
     default: ""
-  verbosity:
-    description: Set logging verbosity level value (INFO/DEBUG)
+  log_level:
+    description: >
+      Log level to show: INFO, WARN, FAIL, DEBUG, ERROR.
     type: string
     default: "INFO"
   verbose:
@@ -75,21 +65,21 @@ steps:
   - checkout # check out source code to working directory
   - run:
       name: Install soos-sca
-      command: pip install soos-sca --trusted-host pypi.python.org
+      command: npm install --prefix ./soos @soos-io/soos-sca
   - run:
       name: 'Run Analysis'
       environment:
         SOOS_CLIENT_ID_VAR_NAME: '<<parameters.client_id>>'
         SOOS_API_KEY_VAR_NAME: '<<parameters.api_key>>'
+        SOOS_BRANCH_NAME: '<<parameters.branch_name>>'
+        SOOS_BUILD_VERSION: '<<parameters.build_version>>'
         SOOS_PROJECT_NAME: '<<parameters.project_name>>'
-        SOOS_SCAN_MODE: '<<parameters.mode>>'
         SOOS_ON_FAILURE: '<<parameters.on_failure>>'
+        SOOS_OUTPUT_FORMAT: '<<parameters.output_format>>'
         SOOS_DIRS_TO_EXCLUDE: '<<parameters.directories_to_exclude>>'
         SOOS_FILES_TO_EXCLUDE: '<<parameters.files_to_exclude>>'
-        SOOS_ANALYSIS_MAX_AWAIT: '<<parameters.analysis_result_max_wait>>'
-        SOOS_POLLING_INTERVAL: '<<parameters.analysis_result_polling_interval>>'
         SOOS_API_URL: '<<parameters.api_base_url>>'
         SOOS_PACKAGE_MANAGERS: '<<parameters.package_managers>>'
-        SOOS_VERBOSITY: '<<parameters.verbosity>>'
+        SOOS_LOG_LEVEL: '<<parameters.log_level>>'
         SOOS_VERBOSE: '<<parameters.verbose>>'
       command: <<include(scripts/run-sca.sh)>>

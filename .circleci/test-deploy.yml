@@ -12,7 +12,7 @@ jobs:
   # You may want to add additional validation steps to ensure the commands are working as expected.
   command-tests:
     docker:
-      - image: cimg/python:3.8
+      - image: cimg/node:18.18.2
     steps:
       - checkout
       - run: curl -LJO https://raw.githubusercontent.com/SOOS-JAlvarez/sca-teamcity-server/main/manifests/nodeJs/npm/package-lock.json

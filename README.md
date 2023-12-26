@@ -2,7 +2,7 @@
 
 SOOS is an independent software security company, located in Winooski, VT USA, building security software for your team. [SOOS, Software security, simplified](https://soos.io).
 
-Use SOOS to scan your software for [vulnerabilities](https://app.soos.io/research/vulnerabilities) and [open source license](https://app.soos.io/research/licenses) issues with [SOOS Core SCA](https://soos.io/sca-product). [Generate SBOMs](https://kb.soos.io/help/soos-reports-for-export). Govern your open source dependencies. Run the [SOOS DAST vulnerability scanner](https://soos.io/dast-product) against your web apps or APIs.
+Use SOOS to scan your software for [vulnerabilities](https://app.soos.io/research/vulnerabilities) and [open source license](https://app.soos.io/research/licenses) issues with [SOOS Core SCA](https://soos.io/products/sca). [Generate and ingest SBOMs](https://soos.io/products/sbom-manager). [Export reports](https://kb.soos.io/help/soos-reports-for-export) to industry standards. Govern your open source dependencies. Run the [SOOS DAST vulnerability scanner](https://soos.io/products/dast) against your web apps or APIs. [Scan your Docker containers](https://soos.io/products/containers) for vulnerabilities. Check your source code for issues with [SAST Analysis](https://soos.io/products/sast).
 
 [Demo SOOS](https://app.soos.io/demo) or [Register for a Free Trial](https://app.soos.io/register).
 
@@ -45,18 +45,17 @@ The SOOS Action has properties which are passed to the action using `with`.
 
 | Property | Default | Description |
 | --- | --- | --- |
-| client_id | ""  | `Required` - SOOS Client Id. Get it from SOOS Application.
-| api_key | ""  | `Required` - SOOS API Key. Get it from SOOS Application
-| on_failure | "fail_the_build"  | Flag indicating whether or not to return an error code if errors are found in the SOOS script or SOOS analysis.
-| directories_to_exclude | ""  | List (comma separated) of directories (relative to ./) to exclude from the search for manifest files. Example - Correct: bin/start/ ... Example - Incorrect: ./bin/start/ ... Example - Incorrect: /bin/start/'|
-| files_to_exclude | "" | List (comma separated) of files (relative to ./) to exclude from the search for manifest files. Example - Correct: bin/start/manifest.txt ... Example - Incorrect: ./bin/start/manifest.txt ... Example - Incorrect: /bin/start/manifest.txt' |
-| analysis_result_max_wait | 300 | Maximum seconds to wait for Analysis Result before exiting with error. |
-| analysis_result_polling_interval | 10 | Polling interval (in seconds) for analysis result completion (success/failure.). Min 10. |
-| fs_debug | false | Enables printing of debug statements from the Orb |
-| package_managers | ""  | List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)|
-| verbosity | "
-INFO"  | Set logging verbosity level value (INFO/DEBUG)|
-| verbose | false  | Enable verbose logging|
+| client_id |  | SOOS Client ID - get yours from [SOOS Integration](https://app.soos.io/integrate/sca). Uses `SOOS_API_CLIENT` env value if present.  
+| api_key |  | SOOS API Key - get yours from [SOOS Integration](https://app.soos.io/integrate/sca). Uses `SOOS_API_KEY` env value if present.
+| branch_name              | `CIRCLE_BRANCH` | Branch Name to create scan under |
+| build_version           | |Version of application build artifacts. |
+| on_failure | `continue_on_failure`  | Flag indicating whether or not to return an error code if errors are found in the SOOS script or SOOS analysis. |
+| output_format   |        | Output format for vulnerabilities: only the value SARIF is available at the moment |  
+| directories_to_exclude |  | Listing of directories or patterns to exclude from the search for manifest files. eg: **bin/start/**, **/start/** |
+| files_to_exclude | | Listing of files or patterns patterns to exclude from the search for manifest files. eg: **/req**.txt/, **/requirements.txt |
+| package_managers | | List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)|
+| log_level | `INFO`  | Log level to show: INFO, WARN, FAIL, DEBUG, ERROR.|
+| verbose | `false`  | Enable verbose logging|
 
 The SOOS Action has environment variables which are passed to the action using `env`. These environment variables are stored as project `environment variables` and are required for the action to operate.
 
