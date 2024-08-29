@@ -58,11 +58,14 @@ parameters:
     type: string
     default: "INFO"
   verbose:
-    description: Enable verbose logging
+    description: DEPRECATED - This parameter has no effect. Set log_level to DEBUG to achieve the same effect.
     type: boolean
     default: false
 steps:
   - checkout # check out source code to working directory
+  - run:
+      name: Clean soos-sca
+      command: '[ -d "./soos" ] && rm -rf "./soos"'
   - run:
       name: Install soos-sca
       command: npm install --prefix ./soos @soos-io/soos-sca
@@ -81,5 +84,4 @@ steps:
         SOOS_API_URL: '<<parameters.api_base_url>>'
         SOOS_PACKAGE_MANAGERS: '<<parameters.package_managers>>'
         SOOS_LOG_LEVEL: '<<parameters.log_level>>'
-        SOOS_VERBOSE: '<<parameters.verbose>>'
       command: <<include(scripts/run-sca.sh)>>

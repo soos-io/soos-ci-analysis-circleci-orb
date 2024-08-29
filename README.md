@@ -16,7 +16,7 @@ vulnerabilities in your projects.
 Example usage:
 
 ```yaml
-version: 2.1
+version: 2.2
 
 orbs:
   soos: soos-io/sca@x.y.z
@@ -55,7 +55,6 @@ The SOOS Action has properties which are passed to the action using `with`.
 | files_to_exclude | | Listing of files or patterns patterns to exclude from the search for manifest files. eg: **/req**.txt/, **/requirements.txt |
 | package_managers | | List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)|
 | log_level | `INFO`  | Log level to show: INFO, WARN, FAIL, DEBUG, ERROR.|
-| verbose | `false`  | Enable verbose logging|
 
 The SOOS Action has environment variables which are passed to the action using `env`. These environment variables are stored as project `environment variables` and are required for the action to operate.
 
@@ -71,7 +70,7 @@ The SOOS Action has environment variables which are passed to the action using `
 ## EXAMPLE: Asynchronous scan that contains other CI logic between the two SOOS jobs:
 
 ```yaml
-version: 2.1
+version: 2.2
 
 orbs:
   soos: soos-io/sca@1.0.0
