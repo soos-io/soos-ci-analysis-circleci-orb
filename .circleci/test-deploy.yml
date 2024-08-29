@@ -15,8 +15,8 @@ jobs:
       - image: cimg/node:18.18.2
     steps:
       - checkout
-      - run: curl -LJO https://raw.githubusercontent.com/SOOS-JAlvarez/sca-teamcity-server/main/manifests/nodeJs/npm/package-lock.json
-      - run: curl -LJO https://raw.githubusercontent.com/SOOS-JAlvarez/sca-teamcity-server/main/manifests/nodeJs/npm/package.json
+      - run: curl -LJO https://raw.githubusercontent.com/soos-io/soos-sca/main/package.json
+      - run: curl -LJO https://raw.githubusercontent.com/soos-io/soos-sca/main/package-lock.json
       # Run your orb's commands to validate them.
       - sca/run-sca-analysis:
           api_base_url: "https://qa-api.soos.io/api/"
