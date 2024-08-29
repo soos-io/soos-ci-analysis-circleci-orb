@@ -16,7 +16,7 @@ vulnerabilities in your projects.
 Example usage:
 
 ```yaml
-version: 2.2
+version: 2.1
 
 orbs:
   soos: soos-io/sca@x.y.z
@@ -70,7 +70,7 @@ The SOOS Action has environment variables which are passed to the action using `
 ## EXAMPLE: Asynchronous scan that contains other CI logic between the two SOOS jobs:
 
 ```yaml
-version: 2.2
+version: 2.1
 
 orbs:
   soos: soos-io/sca@1.0.0

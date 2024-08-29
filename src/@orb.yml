@@ -1,4 +1,4 @@
-version: 2.2
+version: 2.1
 
 description: >
   SOOS SCA Orb helps you scan your web manifests dependencies to find and fix vulnerabilities.
