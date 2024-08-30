@@ -61,7 +61,7 @@ parameters:
     type: string
     default: "INFO"
   verbose:
-    description: Enable verbose logging
+    description: DEPRECATED - This parameter has no effect. Set log_level to DEBUG to achieve the same effect.
     type: boolean
     default: false
 steps:
@@ -78,4 +78,3 @@ steps:
       api_base_url: '<<parameters.api_base_url>>'
       package_managers: '<<parameters.package_managers>>'
       log_level: '<<parameters.log_level>>'
-      verbose: '<<parameters.verbose>>'

@@ -31,9 +31,4 @@ PARAMS=(
     "--workingDirectory" "${CIRCLE_WORKING_DIRECTORY}"
 )
 
-if [  "$SOOS_VERBOSE" -eq 1 ]; then
-    PARAMS+=("--verbose")
-fi
-
-
 node ./soos/node_modules/@soos-io/soos-sca/bin/index.js "${PARAMS[@]}"
