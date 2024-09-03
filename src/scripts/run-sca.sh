@@ -31,4 +31,5 @@ PARAMS=(
     "--workingDirectory" "${CIRCLE_WORKING_DIRECTORY}"
 )
 
+npm install --prefix ./soos @soos-io/soos-sca@${SOOS_SCA_VERSION}
 node ./soos/node_modules/@soos-io/soos-sca/bin/index.js "${PARAMS[@]}"
