@@ -60,6 +60,10 @@ parameters:
       Log level to show: INFO, WARN, FAIL, DEBUG, ERROR.
     type: string
     default: "INFO"
+  sca_version:
+    description: 'The SOOS SCA version to use - Internal Use Only'
+    required: false
+    default: 'latest'
   verbose:
     description: DEPRECATED - This parameter has no effect. Set log_level to DEBUG to achieve the same effect.
     type: boolean
