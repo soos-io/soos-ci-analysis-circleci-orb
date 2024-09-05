@@ -82,3 +82,4 @@ steps:
       api_base_url: '<<parameters.api_base_url>>'
       package_managers: '<<parameters.package_managers>>'
       log_level: '<<parameters.log_level>>'
+      sca_version: '<<parameters.sca_version>>'

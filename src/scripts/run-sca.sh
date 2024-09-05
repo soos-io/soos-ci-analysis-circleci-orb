@@ -31,6 +31,7 @@ PARAMS=(
     "--workingDirectory" "${CIRCLE_WORKING_DIRECTORY}"
 )
 
-[ -d "./soos" ] && rm -rf "./soos"
+echo "SOOS SCA Version: ${SOOS_SCA_VERSION}"
+[ -d "./soos" ] && rm -rf "./soos" && echo "Cleaned ./soos directory"
 npm install --prefix ./soos @soos-io/soos-sca@${SOOS_SCA_VERSION}
 node ./soos/node_modules/@soos-io/soos-sca/bin/index.js "${PARAMS[@]}"
