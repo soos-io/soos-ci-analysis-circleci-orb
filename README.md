@@ -54,7 +54,7 @@ The SOOS Action has properties which are passed to the action using `with`.
 | directories_to_exclude |  | Listing of directories or patterns to exclude from the search for manifest files. eg: **bin/start/**, **/start/** |
 | files_to_exclude | | Listing of files or patterns patterns to exclude from the search for manifest files. eg: **/req**.txt/, **/requirements.txt |
 | package_managers | | List (comma separated) of Package Managers to filter manifest search. (Dart, Erlang, Homebrew, PHP, Java, Nuget, NPM, Python, Ruby, Rust.)|
-| log_level | `INFO`  | Log level to show: INFO, WARN, FAIL, DEBUG, ERROR.|
+| log_level | `INFO`  | Log level to show: DEBUG, INFO, WARN, FAIL, ERROR.|
 
 The SOOS Action has environment variables which are passed to the action using `env`. These environment variables are stored as project `environment variables` and are required for the action to operate.
 
@@ -113,7 +113,7 @@ workflows:
 version: 2.1
 
 orbs:
-  soos: soos-io/sca@1.0.0
+  soos: soos-io/sca@x.x.x
 
 workflows:
   main:
@@ -144,7 +144,7 @@ workflows:
 version: 2.1
 
 orbs:
-  soos: soos-io/sca@1.0.0
+  soos: soos-io/sca@x.x.x
 
 workflows:
   main:
