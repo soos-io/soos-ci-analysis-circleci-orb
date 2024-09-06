@@ -83,3 +83,4 @@ steps:
       package_managers: '<<parameters.package_managers>>'
       log_level: '<<parameters.log_level>>'
       sca_version: '<<parameters.sca_version>>'
+      verbose: '<<parameters.verbose>>'
