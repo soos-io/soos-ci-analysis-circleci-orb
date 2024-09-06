@@ -32,7 +32,7 @@ PARAMS=(
 )
 
 if [  "$SOOS_VERBOSE" -eq 1 ]; then
-    PARAMS+=("--verbose")
+    echo "Warning: verbose is deprecated and has no effect. Set log_level to DEBUG for the same effect."
 fi
 
 echo "SOOS SCA Version: ${SOOS_SCA_VERSION}"
