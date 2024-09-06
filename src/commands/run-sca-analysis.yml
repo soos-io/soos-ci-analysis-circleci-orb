@@ -83,4 +83,5 @@ steps:
         SOOS_PACKAGE_MANAGERS: '<<parameters.package_managers>>'
         SOOS_LOG_LEVEL: '<<parameters.log_level>>'
         SOOS_SCA_VERSION: '<<parameters.sca_version>>'
+        SOOS_VERBOSE: '<<parameters.verbose>>'
       command: <<include(scripts/run-sca.sh)>>
