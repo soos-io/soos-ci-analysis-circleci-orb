@@ -57,7 +57,7 @@ parameters:
     default: ""
   log_level:
     description: >
-      Log level to show: INFO, WARN, FAIL, DEBUG, ERROR.
+      Log level to show: DEBUG, INFO, WARN, FAIL, ERROR.
     type: string
     default: "INFO"
   sca_version:
