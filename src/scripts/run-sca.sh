@@ -31,10 +31,6 @@ PARAMS=(
     "--workingDirectory" "${CIRCLE_WORKING_DIRECTORY}"
 )
 
-if [  "$SOOS_VERBOSE" -eq 1 ]; then
-    echo "Warning: verbose is deprecated and has no effect. Set log_level to DEBUG for the same effect."
-fi
-
 echo "SOOS SCA Version: ${SOOS_SCA_VERSION}"
 [ -d "./soos" ] && rm -rf "./soos" && echo "Cleaned ./soos directory"
 npm install --prefix ./soos @soos-io/soos-sca@${SOOS_SCA_VERSION}
