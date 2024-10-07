@@ -61,10 +61,6 @@ parameters:
     description: 'The SOOS SCA version to use - Internal Use Only'
     type: string
     default: 'latest'
-  verbose:
-    description: DEPRECATED - This parameter has no effect. Set log_level to DEBUG to achieve the same effect.
-    type: boolean
-    default: false
 steps:
   - checkout # check out source code to working directory
   - run:
@@ -83,5 +79,4 @@ steps:
         SOOS_PACKAGE_MANAGERS: '<<parameters.package_managers>>'
         SOOS_LOG_LEVEL: '<<parameters.log_level>>'
         SOOS_SCA_VERSION: '<<parameters.sca_version>>'
-        SOOS_VERBOSE: '<<parameters.verbose>>'
       command: <<include(scripts/run-sca.sh)>>
