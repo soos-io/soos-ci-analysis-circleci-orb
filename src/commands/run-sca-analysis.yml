@@ -1,5 +1,5 @@
 description: >
-  This command executes the SOOS SCA Analysis.
+  This command executes the SOOS SCA Core Analysis.
 parameters:
   project_name:
     description: The project name that will be displayed on the dashboard. If the value is empty or not indicated it will default to the repository name.
